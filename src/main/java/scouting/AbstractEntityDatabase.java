@@ -7,7 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
+//insert into TeamScouting (`game_id`,`team_id`,`prop_id`,`prop_value`)  values(1, 2630, 1, 2);
+//insert into TeamScoutingProps (`prop_id`,`prop_desc`,`prop_style`,`prop_type`, `prop_child`)  values(1, "p1", "not", "number", 0);
 public abstract class AbstractEntityDatabase<EntityType> {
 	private Connection con;
 
@@ -146,16 +147,25 @@ public abstract class AbstractEntityDatabase<EntityType> {
 
 	abstract protected EntityType entityFromResultSet(ResultSet rs) throws SQLException;
 
+	@FunctionalInterface
+	interface ResultSetHandler<T>{
+		T handleNext(ResultSet rs) throws SQLException;
+	}
+
 	protected List<EntityType> getEntitiesByQuery(String sql) throws RuntimeException {
+		return selectElements(sql, this::entityFromResultSet);
+	}
+
+	protected <ElementType> List<ElementType> selectElements(String sql, ResultSetHandler<ElementType> handler) throws RuntimeException {
 		Connection connection = getConnection();
 		Statement st = null;
 		ResultSet rs = null;
-		List<EntityType> entities = new ArrayList<EntityType>();
+		List<ElementType> entities = new ArrayList<>();
 		try {
 			st = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			rs = st.executeQuery(sql);
 			while (rs.next()) {
-				entities.add(entityFromResultSet(rs));
+				entities.add(handler.handleNext(rs));
 			}
 		} catch (Exception e) {
 			throw new RuntimeException("Could not create statement", e);
