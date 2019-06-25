@@ -1,12 +1,16 @@
 package scouting;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting> {
+    public static void main(String[] args) {
+        System.out.println(DatabaseManager.get().getGameScoutingRepository().getTeamPropsByGame(2630));
+    }
+
     @Override
     protected String getEntityTableName() {
         return "TeamScouting";
@@ -29,28 +33,27 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
 
     @Override
     protected GameScouting entityFromResultSet(ResultSet rs) throws SQLException {
-        return new GameScouting(rs.getInt("game_id"), rs.getInt("team_id"), rs.getInt("prop_id"), rs.getString("prop_value"));
+        return new GameScouting(rs.getInt("game_id"), rs.getInt("team_id"), rs.getInt("prop_id"),
+                rs.getString("prop_value"));
     }
 
     public List<GameScouting> getAllEntitiesByTeam(int teamId) {
-        return getEntitiesByQuery(String.format("select * from TeamScouting where team_id=%d order by prop_id", teamId));
+        return getEntitiesByQuery(
+                String.format("select * from TeamScouting where team_id=%d order by prop_id", teamId));
     }
 
-    public List<GameScouting> filterEntitiesByPropId(List<GameScouting> gameScoutings, int propId) {
-        List<GameScouting> propGameScoutings = getEntitiesByQuery(String.format("select * from TeamScouting where prop_id=%d order by prop_id", propId));
-        List<GameScouting> newGameScoutings = new ArrayList<GameScouting>();
-        for (GameScouting gameScouting : gameScoutings) {
-            for (GameScouting propGameScouting : propGameScoutings) {
-                if (gameScouting.toString().equals(propGameScouting.toString())) {
-                    newGameScoutings.add(propGameScouting);
-                }
-            }
-        }
-        return newGameScoutings;
+    public List<Integer> getAllGameNumbers() throws RuntimeException {
+        return selectElements("select distinct game_id from TeamScouting;", rs -> rs.getInt("game_id"));
+
+    }
+
+    public List<String> getAllTeamNumbers() throws RuntimeException {
+        return selectElements("select distinct team_id from TeamScouting;", rs -> String.valueOf(rs.getInt("team_id")));
     }
 
     public List<GameScouting> filterEntitiesByGameId(List<GameScouting> gameScoutings, int gameId) {
-        List<GameScouting> gameGameScoutings = getEntitiesByQuery(String.format("SELECT * FROM TeamScouting where game_id=%d order by game_id;", gameId));
+        List<GameScouting> gameGameScoutings = getEntitiesByQuery(
+                String.format("SELECT * FROM TeamScouting where game_id=%d order by game_id;", gameId));
         List<GameScouting> newList = new ArrayList<GameScouting>();
         for (GameScouting gameScouting : gameScoutings) {
             for (GameScouting propGameScouting : gameGameScoutings) {
@@ -70,150 +73,90 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
         });
         return pAvg;
     }
+    // create view avgs as SELECT team_id, prop_id, avg(prop_value) as prop_avg FROM
+    // db.TeamScouting group by team_id, prop_id;
 
     public HashMap<String, String> getPropsAvarageByTeam(int teamId) {
         HashMap<String, String> avgs = new HashMap<>();
+        avgs.put("teamId", String.valueOf(teamId));
         for (String propId : getPropAvarageByTeam(teamId).keySet()) {
+
             String propAvg = getPropAvarageByTeam(teamId).get(propId);
-            String propType = DatabaseManager.get().getGameScoutingPropsRepository().getEntityByPropId(Integer.parseInt(propId)).getPropType();
+            propAvg = propAvg.contains(".0") ? propAvg.substring(0, propAvg.indexOf(".")) : propAvg;
+
+            String propType = DatabaseManager.get().getGameScoutingPropsRepository()
+                    .getEntityByPropId(Integer.parseInt(propId)).getPropType();
+
             switch (propType) {
                 case "number":
-                    avgs.put(propId, propAvg);
+                    avgs.put(propId, propAvg.contains(".") ? propAvg.substring(0, 4) : propAvg);
                     break;
                 case "text":
                     avgs.put(propId, "text");
                 case "boolean":
-                    String.format("%d/%d | %d%%", Integer.parseInt(propAvg) * getAllGameNumbers().size(), getAllGameNumbers().size(),
-                            (int) ((Double.parseDouble(propAvg)) * 100.0) / 100.0);
+                    avgs.put(propId, String.format("%d/%d | %d%%", (int) (Double.parseDouble(propAvg) * getAllGameNumbers().size()),
+                            getAllGameNumbers().size(), (int) (Double.parseDouble(propAvg.substring(0, 4)) * 100)));
                     break;
             }
         }
-        return null;
+        return avgs;
     }
 
-    public String getAvarage(List<GameScouting> gameScoutings) {
-        //create view avgs as SELECT team_id, prop_id, avg(prop_value) as prop_avg FROM db.TeamScouting group by team_id, prop_id;
-        double avg = 0;
-        int boolCount = 0;
-        String propType = DatabaseManager.get().getGameScoutingPropsRepository().getEntityByPropId(gameScoutings.get(0).getPropId()).getPropType();
-        for (GameScouting gameScouting : gameScoutings) {
-            switch (propType) {
-                case "number":
-                    avg += Integer.parseInt(gameScouting.getPropValue());
-                    break;
-                case "text":
-                    return "text";
-                case "boolean":
-                    if (gameScouting.getPropValue().equals("true")) {
-                        boolCount += 1;
-                    }
-                    break;
-            }
-        }
-        if (propType.equals("boolean")) {
-            return String.format("%d/%d | %d%%", boolCount, gameScoutings.size(), ((boolCount * 10) / gameScoutings.size()) * 10);
-        }
-        avg = (int) ((avg / gameScoutings.size()) * 100) / 100.0;
-        System.out.println(avg == (int) avg);
-        String sAvg = String.valueOf(avg);
-        return sAvg.contains(".0") ? sAvg.substring(0, sAvg.indexOf(".")) : sAvg;
-    }
-
-    public List<HashMap<Integer, String>> getPropsAvarage() {
+    public List<HashMap<String, String>> getPropsAvarage() {
         List<String> teamIds = getAllTeamNumbers();
-        List<HashMap<Integer, String>> teamBars = new ArrayList<HashMap<Integer, String>>();
+        List<HashMap<String, String>> teamBars = new ArrayList<>();
         for (String teamId : teamIds) {
-            List<GameScouting> teamProps = getAllEntitiesByTeam(Integer.parseInt(teamId));
-            HashMap<Integer, String> teamBar = new HashMap<Integer, String>();
-            teamBar.put(-1, teamId);
-            for (int i = 1; i <= teamProps.get(teamProps.size() - 1).getPropId(); i++) {
-                List<GameScouting> teamProp = filterEntitiesByPropId(teamProps, i);
-                System.out.println(teamProp);
-                teamBar.put(teamProp.get(0).getPropId(), getAvarage(teamProp));
-            }
-            System.out.println(teamBar);
-            teamBars.add(teamBar);
+            teamBars.add(getPropsAvarageByTeam(Integer.parseInt(teamId)));
         }
         return teamBars;
     }
 
-    public List<String> getAllTeamNumbers() throws RuntimeException {
-        Connection connection = getConnection();
-        Statement st = null;
-        ResultSet rs = null;
-        List<String> entities = new ArrayList<String>();
-        try {
-            st = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            rs = st.executeQuery("select distinct team_id from TeamScouting;");
-            while (rs.next()) {
-                entities.add(String.valueOf(rs.getInt("team_id")));
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Could not create statement", e);
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                }
-            }
-            if (st != null) {
-                try {
-                    st.close();
-                } catch (SQLException e) {
-                }
-            }
-        }
-        return entities;
-    }
-
-    public List<Integer> getAllGameNumbers() throws RuntimeException {
-        Connection connection = getConnection();
-        Statement st = null;
-        ResultSet rs = null;
-        List<Integer> entities = new ArrayList<Integer>();
-        try {
-            st = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            rs = st.executeQuery("select distinct game_id from TeamScouting;");
-            while (rs.next()) {
-                entities.add(rs.getInt("game_id"));
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Could not create statement", e);
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                }
-            }
-            if (st != null) {
-                try {
-                    st.close();
-                } catch (SQLException e) {
-                }
-            }
-        }
-        return entities;
-    }
-
-    public List<HashMap<Integer, String>> getAllTeamPropsByGame(int teamId) {
-        List<HashMap<Integer, String>> teamBars = new ArrayList<HashMap<Integer, String>>();
+    public List<HashMap<String, String>> getTeamPropsByGame(int teamId) {
+        List<HashMap<String, String>> teamBars = new ArrayList<>();
         for (int i = getAllGameNumbers().get(0); i <= getAllGameNumbers().get(getAllGameNumbers().size() - 1); i++) {
             List<GameScouting> teamGames = filterEntitiesByGameId(getAllEntitiesByTeam(teamId), i);
-            HashMap<Integer, String> teamBar = new HashMap<Integer, String>();
-            teamBar.put(-2, String.valueOf(teamId));
-            teamBar.put(-1, String.valueOf(i));
+            HashMap<String, String> teamBar = new HashMap<>();
+            teamBar.put("teamId", String.valueOf(teamId));
+            teamBar.put("gameId", String.valueOf(i));
             for (int h = 0; h <= teamGames.size() - 1; h++) {
-                teamBar.put(teamGames.get(h).getPropId(), teamGames.get(i).getPropValue());
+                teamBar.put(String.valueOf(teamGames.get(h).getPropId()), teamGames.get(h).getPropValue());
             }
             teamBars.add(teamBar);
         }
         return teamBars;
     }
 
-
-    public static void main(String[] args) {
-        System.out.println(DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(2630));
+    public List<HashMap<String, String>> orderByPropId(String propId) {
+        List<HashMap<String, String>> propsAvg = getPropsAvarage();
+        String propType = DatabaseManager.get().getGameScoutingPropsRepository()
+                .getEntityByPropId(Integer.parseInt(propId)).getPropType();
+        for (int i = 0; i < propsAvg.size() - 1; i++) {
+            for (int j = 0; j < propsAvg.size() - i; j++) {
+                switch (propType) {
+                    case "number":
+                        if (Integer.parseInt(propsAvg.get(j).get(propId)) < Integer
+                                .parseInt(propsAvg.get(j + 1).get(propId))) {
+                            HashMap<String, String> temp = propsAvg.get(j);
+                            propsAvg.get(j).putAll(propsAvg.get(j + 1));
+                            propsAvg.get(j + 1).putAll(temp);
+                        }
+                        break;
+                    case "text":
+                        return propsAvg;
+                    case "boolean":
+                        if (Integer.parseInt(
+                                propsAvg.get(j).get(propId).substring(propsAvg.get(j).get(propId).indexOf("|") + 1,
+                                        propsAvg.get(j).get(propId).length() - 1)) < Integer
+                                .parseInt(propsAvg.get(j + 1).get(propId).substring(
+                                        propsAvg.get(j + 1).get(propId).indexOf("|") + 2,
+                                        propsAvg.get(j + 1).get(propId).length() - 1))) {
+                            HashMap<String, String> temp = propsAvg.get(j);
+                            propsAvg.get(j).putAll(propsAvg.get(j + 1));
+                            propsAvg.get(j + 1).putAll(temp);
+                        }
+                }
+            }
+        }
+        return propsAvg;
     }
 }

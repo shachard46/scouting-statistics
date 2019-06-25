@@ -16,14 +16,15 @@
 	<%@include file="header.jsp"%>
 
 	<table class="container">
-		<tr class="header">
+		<%
+			for (HashMap<String, String> gameBar : DatabaseManager.get().getGameScoutingRepository()
+					.getTeamPropsByGame(Integer.parseInt(request.getParameter("team")))) {
+		%><tr class="header">
 			<%
-				for (HashMap<String, String> teamBar : DatabaseManager.get().getGameScoutingRepository()
-						.getPropsAvarage()) {
-					for (String propId : teamBar.keySet()) {
+				for (String propId : gameBar.keySet()) {
 			%>
-			<td class="tooltip"><%=teamBar.get(propId)%>
-				<span class="tooltiptext"><%=teamBar.get("teamId") %></span></td>
+			<td class="tooltip"><%=gameBar.get(propId)%> <span
+				class="tooltiptext"><%=gameBar.get("teamId")%></span></td>
 
 			<%
 				}

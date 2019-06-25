@@ -50,7 +50,7 @@ public class GameScoutingPropsRepository extends AbstractEntityDatabase<GameScou
                 Node node = nodeList1.item(h);
                 Element element = (Element) node;
                 if (Integer.parseInt(element.getAttribute("id")) == propId){
-                    String[] arr = {nodeList.item(i).getNodeName(), element.getAttribute("name")};
+                    String[] arr = {/*nodeList.item(i).getNodeName(),*/element.getAttribute("id"), element.getAttribute("name")};
                     return arr;
                 }
             }
