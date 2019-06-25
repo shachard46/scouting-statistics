@@ -5,33 +5,34 @@
 <html>
 
 <head>
-<link rel="stylesheet" type="text/css" href="style.css" />
-<%--
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <%--
     <script src="functions.js"></script>
     --%>
-<title>FirstForum</title>
+    <title>FirstForum</title>
 </head>
 
 <body class="avarage">
-	<%@include file="header.jsp"%>
+    <%@include file="header.jsp"%>
 
-	<table class="container">
-		<%
+    <table class="container">
+        <%
 			for (HashMap<String, String> gameBar : DatabaseManager.get().getGameScoutingRepository()
 					.getTeamPropsByGame(Integer.parseInt(request.getParameter("team")))) {
 		%><tr class="header">
-			<%
+            <%
 				for (String propId : gameBar.keySet()) {
 			%>
-			<td class="tooltip"><%=gameBar.get(propId)%> <span
-				class="tooltiptext"><%=gameBar.get("teamId")%></span></td>
+            <td class="tooltip"><%=gameBar.get(propId)%> <span class="tooltiptext"><%=gameBar.get("teamId")%></span>
+            </td>
 
-			<%
+            <%
 				}
 				}
 			%>
-		</tr>
-	</table>
+        </tr>
+    </table>
+        <button onclick="location.href = 'graph.jsp'">Graph</button>
 </body>
 
 </html>
