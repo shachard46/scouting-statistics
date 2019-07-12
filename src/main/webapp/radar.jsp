@@ -27,31 +27,34 @@
 		}
 	</script>
 	<script>
-	<%List<HashMap<String, String>> gameBars = DatabaseManager.get().getGameScoutingRepository()
-					.getTeamPropsByGame(Integer.parseInt(request.getParameter("team")));%>
+	<%List<HashMap<String, String>> teamBars = DatabaseManager.get().getGameScoutingRepository().getPropsAvarage();%>
 		var ctx = document.getElementById('myChart').getContext('2d');
 		var myChart = new Chart(ctx,
 				{
-					type : 'line',
+					type : 'radar',
 					data : {
-						labels : <%=DatabaseManager.get().getGameScoutingRepository().getAllTeamGameNumbers(Integer.parseInt(request.getParameter("team")))%>,
+						labels : [<%for(int key = 0; key < DatabaseManager.get().getGameScoutingPropsRepository().getPropNameInHebrew()
+						.keySet().size(); key++){%><%="'"+DatabaseManager.get().getGameScoutingPropsRepository().getPropNameInHebrew().get(key)+"', "%><%}%>],
 						datasets : [
-						<%for (String propId : gameBars.get(0).keySet()) {
-							if(!propId.equals("teamId") && !propId.equals("gameId")){
-						%>
+							<%for(HashMap<String, String> teamBar : teamBars){%>
 								{
-									label : '<%=propId%>',
-									fill: false, 
-									data : [<%for (int i = 0; i < 3; i++) {%>
-									<%=gameBars.get(i).get(propId) + ", "%>
-									<%}%>],
+									label : '<%=teamBar.get("teamId")%>',
+									fill: true, 
+									data : [
+									<%try{
+										for (int i = 0; i < teamBar.size(); i++) {
+											String value = teamBar.get(String.valueOf(i)).equals("text")? "0" : teamBar.get(String.valueOf(i));
+									%>
+									<%= " ,"+ (value.contains("|") ? Double.parseDouble(value.substring(value.indexOf("|") + 1, value.indexOf("%")))/100 : value)%>
+									<%}}catch(Exception e){}%>],
 									borderColor : [
-							        		getRandomColor(),
+										getRandomColor()
 									],
-									borderWidth : 1
+									backgroundColor : [getRandomColor()], 
+									borderWidth : 2
 								},
-								<%}}%>
-]
+								<%}%>
+							]							
 					},
 					options : {
 						scales : {

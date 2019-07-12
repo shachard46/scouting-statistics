@@ -4,13 +4,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import java.io.File;
+import java.util.HashMap;
+import java.util.List;
 
-public class GameScoutingPropsRepository extends AbstractEntityDatabase<GameScoutingProps>{
+public class GameScoutingPropsRepository extends AbstractEntityDatabase<GameScoutingProps> {
     @Override
     protected String getEntityTableName() {
         return "TeamScoutingProps";
@@ -33,33 +40,39 @@ public class GameScoutingPropsRepository extends AbstractEntityDatabase<GameScou
 
     @Override
     protected GameScoutingProps entityFromResultSet(ResultSet rs) throws SQLException {
-        GameScoutingProps gameScoutingProps = new GameScoutingProps(rs.getString("prop_desc"), rs.getString("prop_type"), rs.getInt("prop_child"));
+        GameScoutingProps gameScoutingProps = new GameScoutingProps(rs.getString("prop_desc"),
+                rs.getString("prop_type"), rs.getInt("prop_child"));
         gameScoutingProps.setPropId(rs.getInt("prop_id"));
         return gameScoutingProps;
     }
-    public String[] getPropNameInHebrew(int propId) throws Exception{
-        File fXmlFile = new File("/Users/mkyong/staff.xml");
+
+    public HashMap<Integer, String> getPropNameInHebrew() throws Exception {
+        File fXmlFile = new File("src/ScoutingProps_He.xml");
+        HashMap<Integer, String> hebNames = new HashMap<>();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        dbFactory.setNamespaceAware(false);
         Document doc = dBuilder.parse(fXmlFile);
-        doc.getDocumentElement().normalize();
-        NodeList nodeList = doc.getElementsByTagName("TeamScoutingProps");
-        for (int i = 0; i < nodeList.getLength(); i++){
-            NodeList nodeList1 = doc.getElementsByTagName(nodeList.item(i).getNodeName());
-            for (int h = 0; h < nodeList1.getLength(); h++){
-                Node node = nodeList1.item(h);
-                Element element = (Element) node;
-                if (Integer.parseInt(element.getAttribute("id")) == propId){
-                    String[] arr = {/*nodeList.item(i).getNodeName(),*/element.getAttribute("id"), element.getAttribute("name")};
-                    return arr;
-                }
-            }
-
+        NodeList nodeList = (NodeList) XPathFactory.newInstance().newXPath().evaluate("data/TeamScoutingProps/*/prop",
+                doc, XPathConstants.NODESET);
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Node n = nodeList.item(i);
+            hebNames.put(Integer.parseInt(n.getAttributes().getNamedItem("id").getNodeValue()),
+                    n.getAttributes().getNamedItem("name").getNodeValue());
         }
-        return null;
+        return hebNames;
     }
+
     public GameScoutingProps getEntityByPropId(int id) {
         String sql = String.format("select * from %s where prop_id = %s", getEntityTableName(), id);
         return getSingleEntityByQuery(sql);
+    }
+
+    public static void main(String[] args) {
+        try {
+            System.out.println(DatabaseManager.get().getGameScoutingPropsRepository().getPropNameInHebrew());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

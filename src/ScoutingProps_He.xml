@@ -1,0 +1,112 @@
+<data>
+  <TeamScoutingProps>
+    <Auto>
+      <prop name="מיקום התחלתי" id="0" />
+      <prop name="גובה התחלתי" id="1" />
+      <prop name="כדור קרגו צד" id="2" />
+      <prop name="דיסק אמצע קרגו" id="3" />
+      <prop name="דיסק צד קרגו" id="4" />
+      <prop name="דיסק טיל" id="5" />
+    </Auto>
+
+    <TeleOp>
+      <prop name="כדור גבוה" id="6" />
+      <prop name="כדור נמוך" id="7" />
+      <prop name="כדורים שנפלו" id="8" />
+      <prop name="דיסק גבוה" id="9" />
+      <prop name="דיסק בינוני" id="10" />
+      <prop name="דיסק נמוך" id="11" />
+      <prop name="דיסקים שנפלו" id="12" />
+      <prop name="דיסק מהרצפה" id="13" />
+    </TeleOp>
+
+    <EndGame>
+      <prop name="הגנה" id="14" />
+      <prop name="שלב 1" id="15" />
+      <prop name="שלב 2" id="16" />
+      <prop name="שלב 3" id="17" />
+      <prop name="הערות" id="18" />
+    </EndGame>
+
+
+    <SuperScouting>
+      <prop id="31" name="סופר הערות"/>
+    </SuperScouting>
+    <names>
+      <prop id="32" name="שם  סקאוטר"/>
+      <prop id="33" name="שם סופר סקאוטר"/>
+    </names>
+  </TeamScoutingProps>
+
+  <PitScoutingProps>
+    <prop id="0" name="רוחב רובוט"/>
+    <prop id="1" name="אורך רובוט"/>
+    <prop id="2" name="משקל הרובוט"/>
+    <prop id="3" name="תיאור מערכת הנעה"/>
+    <prop id="4" name="מתעסק עם דיסקים"/>
+    <prop id="5" name="מתעסק עם כדורים"/>
+    <prop id="6" name="איסוף דיסקים מהרצפה"/>
+    <prop id="7" name="איסוף כדורים מהרצפה"/>
+    <prop id="8" name="יכול לשים בגבוהים"/>
+    <prop id="9" name="סוג מערכת טיפוס" />
+    <prop id="10" name="שפות תכנות ולאיזה שימוש" />
+    <prop id="11" name="הערות" />
+  </PitScoutingProps>
+
+</data>
+<!-- 
+<data>
+    <TeamScoutingProps>
+        <Auto>
+            <prop name="מיקום התחלתי" id="0" />
+            <prop name="גובה התחלתי" id="1" />
+            <prop name="כדור קרגו צד" id="2" />
+            <prop name="דיסק אמצע קרגו" id="3" />
+            <prop name="דיסק צד קרגו" id="4" />
+            <prop name="דיסק טיל" id="5" />
+        </Auto>
+
+        <TeleOp>
+            <prop name="כדור גבוה" id="6" />
+            <prop name="כדור נמוך" id="7" />
+            <prop name="כדורים שנפלו" id="8" />
+            <prop name="דיסק גבוה" id="9" />
+            <prop name="דיסק בינוני" id="10" />
+            <prop name="דיסק נמוך" id="11" />
+            <prop name="דיסקים שנפלו" id="12" />
+            <prop name="דיסק מהרצפה" id="13" />
+        </TeleOp>
+
+        <EndGame>
+            <prop name="הגנה" id="14" />
+            <prop name="שלב 1" id="15" />
+            <prop name="שלב 2" id="16" />
+            <prop name="שלב 3" id="17" />
+            <prop name="הערות" id="18" />
+        </EndGame>
+
+
+      <SuperScouting>
+        <prop id="31" name="סופר הערות"/>
+      </SuperScouting>
+        <prop id="32" name="שם  סקאוטר"/>
+        <prop id="33" name="שם סופר סקאוטר"/>
+  </TeamScoutingProps>
+
+  <PitScoutingProps>
+    <prop id="0" name="רוחב רובוט"/>
+    <prop id="1" name="אורך רובוט"/>
+    <prop id="2" name="משקל הרובוט"/>
+    <prop id="3" name="תיאור מערכת הנעה"/>
+    <prop id="4" name="מתעסק עם דיסקים"/>
+    <prop id="5" name="מתעסק עם כדורים"/>
+    <prop id="6" name="איסוף דיסקים מהרצפה"/>
+    <prop id="7" name="איסוף כדורים מהרצפה"/>
+    <prop id="8" name="יכול לשים בגבוהים"/>
+    <prop id="9" name="סוג מערכת טיפוס" />
+    <prop id="10" name="שפות תכנות ולאיזה שימוש" />
+    <prop id="11" name="הערות" />
+  </PitScoutingProps>
+
+</data>
+ -->

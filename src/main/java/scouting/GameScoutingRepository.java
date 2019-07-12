@@ -1,14 +1,17 @@
 package scouting;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting> {
-    public static void main(String[] args) {
-        System.out.println(DatabaseManager.get().getGameScoutingRepository().getTeamPropsByGame(2630));
+    public static void main(String[] args) throws Exception{
+        Runtime.getRuntime().exec(new String[] {"zsh", "/K", "Start"});
+        Runtime.getRuntime().exec("mkdir shlomi");
+
+
+//        System.out.println(DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(2630));
     }
 
     @Override
@@ -42,8 +45,8 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
                 String.format("select * from TeamScouting where team_id=%d order by prop_id", teamId));
     }
 
-    public List<Integer> getAllGameNumbers() throws RuntimeException {
-        return selectElements("select distinct game_id from TeamScouting;", rs -> rs.getInt("game_id"));
+    public List<Integer> getAllTeamGameNumbers(int teamId) throws RuntimeException {
+        return selectElements("select distinct game_id from TeamScouting where team_id="+ teamId +";", rs -> rs.getInt("game_id"));
 
     }
 
@@ -80,23 +83,26 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
         HashMap<String, String> avgs = new HashMap<>();
         avgs.put("teamId", String.valueOf(teamId));
         for (String propId : getPropAvarageByTeam(teamId).keySet()) {
-
+            System.out.println(propId);
             String propAvg = getPropAvarageByTeam(teamId).get(propId);
             propAvg = propAvg.contains(".0") ? propAvg.substring(0, propAvg.indexOf(".")) : propAvg;
 
             String propType = DatabaseManager.get().getGameScoutingPropsRepository()
                     .getEntityByPropId(Integer.parseInt(propId)).getPropType();
-
+            propAvg = propAvg.contains(".") && propAvg.length() > 4? propAvg.substring(0, 4) : propAvg;
             switch (propType) {
                 case "number":
-                    avgs.put(propId, propAvg.contains(".") ? propAvg.substring(0, 4) : propAvg);
+                    avgs.put(propId, propAvg);
                     break;
                 case "text":
                     avgs.put(propId, "text");
-                case "boolean":
-                    avgs.put(propId, String.format("%d/%d | %d%%", (int) (Double.parseDouble(propAvg) * getAllGameNumbers().size()),
-                            getAllGameNumbers().size(), (int) (Double.parseDouble(propAvg.substring(0, 4)) * 100)));
                     break;
+                case "boolean":
+                    avgs.put(propId, String.format("%d/%d | %d%%", (int) (Double.parseDouble(propAvg) * getAllTeamGameNumbers(teamId).size()),
+                    		getAllTeamGameNumbers(teamId).size(), (int) (Double.parseDouble(propAvg) * 100)));
+                    break;
+                    default:
+                        avgs.put(propId, "fuckingshit");
             }
         }
         return avgs;
@@ -113,7 +119,7 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
 
     public List<HashMap<String, String>> getTeamPropsByGame(int teamId) {
         List<HashMap<String, String>> teamBars = new ArrayList<>();
-        for (int i = getAllGameNumbers().get(0); i <= getAllGameNumbers().get(getAllGameNumbers().size() - 1); i++) {
+        for (int i : getAllTeamGameNumbers(teamId)) {
             List<GameScouting> teamGames = filterEntitiesByGameId(getAllEntitiesByTeam(teamId), i);
             HashMap<String, String> teamBar = new HashMap<>();
             teamBar.put("teamId", String.valueOf(teamId));
@@ -158,5 +164,9 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
             }
         }
         return propsAvg;
+    }
+    public void pushToTablet() throws IOException {
+        Runtime.getRuntime().exec(new String[] {"zsh", "/K", "Start"});
+        Runtime.getRuntime().exec("mkdir shlomi");
     }
 }
