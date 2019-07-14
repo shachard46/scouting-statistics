@@ -1,14 +1,11 @@
 package scouting;
 
 import freemarker.cache.FileTemplateLoader;
-import freemarker.cache.StringTemplateLoader;
-import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,37 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting> {
-    public static void main(String[] args) throws Exception{
-        System.out.println(DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(2630));
-
-        Map<String, String> root = DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(2630);
-        root.put("team", "2630");
-        root.put("game", "54");
-
-        Map<String,String> newMap = new HashMap<>();
-        for(String k : root.keySet()){
-            try{
-                Integer.parseInt(k);
-                newMap.put("id_" + k, root.get(k));
-            }catch (NumberFormatException e){
-                newMap.put(k, root.get(k));
-            }
-        }
-        root = newMap;
-        Configuration cfg = new Configuration(Configuration.VERSION_2_3_27);
-        FileTemplateLoader loader = new FileTemplateLoader(new File("src/main/webapp/WEB-INF/templates"));
-        cfg.setTemplateLoader(loader);
-
-        Template template = cfg.getTemplate("tabletTemp.html");
-
-//        Writer out = new OutputStreamWriter(System.out);
-        Writer out = new FileWriter("/Users/shachardavid/test-with-template.html");
-        template.process(root, out);
-        out.flush();
-        out.close();
-
-
-
+    public static void main(String[] args) throws Exception {
+        DatabaseManager.get().getGameScoutingRepository().exportToTablet("16", "qf");
     }
 
     @Override
@@ -199,33 +167,38 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
         }
         return propsAvg;
     }
-    public void exportToTablet(String game_id) throws Exception{
-        Map<String, String> root = DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(2630);
-        root.put("team", "2630");
-        root.put("game", game_id);
 
-        Map<String,String> newMap = new HashMap<>();
-        for(String k : root.keySet()){
-            try{
-                Integer.parseInt(k);
-                newMap.put("id_" + k, root.get(k));
-            }catch (NumberFormatException e){
-                newMap.put(k, root.get(k));
+    public void exportToTablet(String gameId, String compType) throws Exception {
+        int i = 1;
+        for (EventMatch team : DatabaseManager.get().getEventMatchRepository().getTeamsByGameAndCompType(gameId, compType)) {
+            Map<String, String> root = DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(team.getTeamId());
+            root.put("team", String.valueOf(team.getTeamId()));
+            root.put("game", gameId);
+            root.put("color", team.getAlliance() == 0 ? "#E34234" : "#4166f5");
+
+            Map<String, String> newMap = new HashMap<>();
+            for (String k : root.keySet()) {
+                try {
+                    Integer.parseInt(k);
+                    newMap.put("id_" + k, root.get(k));
+                } catch (NumberFormatException e) {
+                    newMap.put(k, root.get(k));
+                }
             }
-        }
-        root = newMap;
-        Configuration cfg = new Configuration(Configuration.VERSION_2_3_27);
-        FileTemplateLoader loader = new FileTemplateLoader(new File("src/main/webapp/WEB-INF/templates"));
-        cfg.setTemplateLoader(loader);
+            root = newMap;
+            Configuration cfg = new Configuration(Configuration.VERSION_2_3_27);
+            FileTemplateLoader loader = new FileTemplateLoader(new File("src/main/webapp/WEB-INF/templates"));
+            cfg.setTemplateLoader(loader);
 
-        Template template = cfg.getTemplate("tabletTemp.html");
+            Template template = cfg.getTemplate("tabletTemp.html");
 
 //        Writer out = new OutputStreamWriter(System.out);
-        Writer out = new FileWriter("/Users/shachardavid/test-with-template.html");
-        template.process(root, out);
-        out.flush();
-        out.close();
-
+            Writer out = new FileWriter("/Users/shachardavid/table"+i+".html");
+            template.process(root, out);
+            out.flush();
+            out.close();
+            i++;
+        }
 
     }
 }
