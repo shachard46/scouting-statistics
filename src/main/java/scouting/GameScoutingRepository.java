@@ -19,18 +19,30 @@ import java.util.Map;
 
 public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting> {
     public static void main(String[] args) throws Exception{
-//        System.out.println(DatabaseManager.get().getGameScoutingRepository().getTeamPropsByGame(2630));
+        System.out.println(DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(2630));
 
-        HashMap<String, String> root = DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(2630);
+        Map<String, String> root = DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(2630);
+        root.put("team", "2630");
+        root.put("game", "54");
+
+        Map<String,String> newMap = new HashMap<>();
+        for(String k : root.keySet()){
+            try{
+                Integer.parseInt(k);
+                newMap.put("id_" + k, root.get(k));
+            }catch (NumberFormatException e){
+                newMap.put(k, root.get(k));
+            }
+        }
+        root = newMap;
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_27);
-        File temp = new File("src/main/webapp/WEB-INF/templates/tabletTemp.html");
-        FileTemplateLoader loader = new FileTemplateLoader(temp);
+        FileTemplateLoader loader = new FileTemplateLoader(new File("src/main/webapp/WEB-INF/templates"));
         cfg.setTemplateLoader(loader);
 
-        Template template = cfg.getTemplate(loader.baseDir.getName());
+        Template template = cfg.getTemplate("tabletTemp.html");
 
 //        Writer out = new OutputStreamWriter(System.out);
-        Writer out = new FileWriter("/Users/shachardavid/test-with-template.txt");
+        Writer out = new FileWriter("/Users/shachardavid/test-with-template.html");
         template.process(root, out);
         out.flush();
         out.close();
@@ -114,16 +126,16 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
 
             String propType = DatabaseManager.get().getGameScoutingPropsRepository()
                     .getEntityByPropId(Integer.parseInt(propId)).getPropType();
-
+            propAvg = propAvg.length() > 4 && propAvg.contains(".") ? propAvg.substring(0, 4) : propAvg;
             switch (propType) {
                 case "number":
-                    avgs.put(propId, propAvg.contains(".") ? propAvg.substring(0, 4) : propAvg);
+                    avgs.put(propId, propAvg);
                     break;
                 case "text":
                     avgs.put(propId, "text");
                 case "boolean":
                     avgs.put(propId, String.format("%d/%d | %d%%", (int) (Double.parseDouble(propAvg) * getAllGameNumbers().size()),
-                            getAllGameNumbers().size(), (int) (Double.parseDouble(propAvg.substring(0, 4)) * 100)));
+                            getAllGameNumbers().size(), (int) (Double.parseDouble(propAvg) * 100)));
                     break;
             }
         }
@@ -186,5 +198,34 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
             }
         }
         return propsAvg;
+    }
+    public void exportToTablet(String game_id) throws Exception{
+        Map<String, String> root = DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(2630);
+        root.put("team", "2630");
+        root.put("game", game_id);
+
+        Map<String,String> newMap = new HashMap<>();
+        for(String k : root.keySet()){
+            try{
+                Integer.parseInt(k);
+                newMap.put("id_" + k, root.get(k));
+            }catch (NumberFormatException e){
+                newMap.put(k, root.get(k));
+            }
+        }
+        root = newMap;
+        Configuration cfg = new Configuration(Configuration.VERSION_2_3_27);
+        FileTemplateLoader loader = new FileTemplateLoader(new File("src/main/webapp/WEB-INF/templates"));
+        cfg.setTemplateLoader(loader);
+
+        Template template = cfg.getTemplate("tabletTemp.html");
+
+//        Writer out = new OutputStreamWriter(System.out);
+        Writer out = new FileWriter("/Users/shachardavid/test-with-template.html");
+        template.process(root, out);
+        out.flush();
+        out.close();
+
+
     }
 }
