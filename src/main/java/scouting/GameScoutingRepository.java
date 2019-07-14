@@ -1,5 +1,6 @@
 package scouting;
 
+<<<<<<< HEAD
 import freemarker.cache.FileTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -17,6 +18,20 @@ import java.util.Map;
 public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting> {
     public static void main(String[] args) throws Exception {
         DatabaseManager.get().getGameScoutingRepository().exportToTablet("17", "qm");
+=======
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
+
+public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting> {
+    public static void main(String[] args) throws Exception{
+        Runtime.getRuntime().exec(new String[] {"zsh", "/K", "Start"});
+        Runtime.getRuntime().exec("mkdir shlomi");
+
+
+//        System.out.println(DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(2630));
+>>>>>>> temporary
     }
 
     @Override
@@ -50,8 +65,8 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
                 String.format("select * from TeamScouting where team_id=%d order by prop_id", teamId));
     }
 
-    public List<Integer> getAllGameNumbers() throws RuntimeException {
-        return selectElements("select distinct game_id from TeamScouting;", rs -> rs.getInt("game_id"));
+    public List<Integer> getAllTeamGameNumbers(int teamId) throws RuntimeException {
+        return selectElements("select distinct game_id from TeamScouting where team_id="+ teamId +";", rs -> rs.getInt("game_id"));
 
     }
 
@@ -88,7 +103,7 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
         HashMap<String, String> avgs = new HashMap<>();
         avgs.put("teamId", String.valueOf(teamId));
         for (String propId : getPropAvarageByTeam(teamId).keySet()) {
-
+            System.out.println(propId);
             String propAvg = getPropAvarageByTeam(teamId).get(propId);
             propAvg = propAvg.contains(".0") ? propAvg.substring(0, propAvg.indexOf(".")) : propAvg;
 
@@ -101,10 +116,13 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
                     break;
                 case "text":
                     avgs.put(propId, "text");
-                case "boolean":
-                    avgs.put(propId, String.format("%d/%d | %d%%", (int) (Double.parseDouble(propAvg) * getAllGameNumbers().size()),
-                            getAllGameNumbers().size(), (int) (Double.parseDouble(propAvg) * 100)));
                     break;
+                case "boolean":
+                    avgs.put(propId, String.format("%d/%d | %d%%", (int) (Double.parseDouble(propAvg) * getAllTeamGameNumbers(teamId).size()),
+                    		getAllTeamGameNumbers(teamId).size(), (int) (Double.parseDouble(propAvg) * 100)));
+                    break;
+                    default:
+                        avgs.put(propId, "fuckingshit");
             }
         }
         return avgs;
@@ -121,7 +139,7 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
 
     public List<HashMap<String, String>> getTeamPropsByGame(int teamId) {
         List<HashMap<String, String>> teamBars = new ArrayList<>();
-        for (int i = getAllGameNumbers().get(0); i <= getAllGameNumbers().get(getAllGameNumbers().size() - 1); i++) {
+        for (int i : getAllTeamGameNumbers(teamId)) {
             List<GameScouting> teamGames = filterEntitiesByGameId(getAllEntitiesByTeam(teamId), i);
             HashMap<String, String> teamBar = new HashMap<>();
             teamBar.put("teamId", String.valueOf(teamId));
