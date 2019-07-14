@@ -1,14 +1,44 @@
 package scouting;
 
+import freemarker.cache.FileTemplateLoader;
+import freemarker.cache.StringTemplateLoader;
+import freemarker.cache.TemplateLoader;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting> {
-    public static void main(String[] args) {
-        System.out.println(DatabaseManager.get().getGameScoutingRepository().getTeamPropsByGame(2630));
+    public static void main(String[] args) throws Exception{
+//        System.out.println(DatabaseManager.get().getGameScoutingRepository().getTeamPropsByGame(2630));
+
+        HashMap<String, String> root = DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(2630);
+        root.put("user", "Big Joe");
+
+        Configuration cfg = new Configuration(Configuration.VERSION_2_3_27);
+        File temp = new File("");
+        FileTemplateLoader loader = new FileTemplateLoader(temp);
+        cfg.setTemplateLoader(loader);
+
+        Template template = cfg.getTemplate(loader.baseDir.getName());
+
+//        Writer out = new OutputStreamWriter(System.out);
+        Writer out = new FileWriter("/Users/shachardavid/test-with-template.txt");
+        template.process(root, out);
+        out.flush();
+        out.close();
+
+
+
     }
 
     @Override
