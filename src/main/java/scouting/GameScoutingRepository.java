@@ -22,10 +22,8 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
 //        System.out.println(DatabaseManager.get().getGameScoutingRepository().getTeamPropsByGame(2630));
 
         HashMap<String, String> root = DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(2630);
-        root.put("user", "Big Joe");
-
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_27);
-        File temp = new File("");
+        File temp = new File("src/main/webapp/WEB-INF/templates/tabletTemp.html");
         FileTemplateLoader loader = new FileTemplateLoader(temp);
         cfg.setTemplateLoader(loader);
 
