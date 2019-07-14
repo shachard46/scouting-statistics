@@ -1,6 +1,5 @@
 package scouting;
 
-<<<<<<< HEAD
 import freemarker.cache.FileTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -18,20 +17,6 @@ import java.util.Map;
 public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting> {
     public static void main(String[] args) throws Exception {
         DatabaseManager.get().getGameScoutingRepository().exportToTablet("17", "qm");
-=======
-import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
-
-public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting> {
-    public static void main(String[] args) throws Exception{
-        Runtime.getRuntime().exec(new String[] {"zsh", "/K", "Start"});
-        Runtime.getRuntime().exec("mkdir shlomi");
-
-
-//        System.out.println(DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(2630));
->>>>>>> temporary
     }
 
     @Override
