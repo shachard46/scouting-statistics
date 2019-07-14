@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting> {
     public static void main(String[] args) throws Exception {
-        DatabaseManager.get().getGameScoutingRepository().exportToTablet("16", "qf");
+        DatabaseManager.get().getGameScoutingRepository().exportToTablet("17", "qm");
     }
 
     @Override
@@ -171,7 +171,16 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
     public void exportToTablet(String gameId, String compType) throws Exception {
         int i = 1;
         for (EventMatch team : DatabaseManager.get().getEventMatchRepository().getTeamsByGameAndCompType(gameId, compType)) {
-            Map<String, String> root = DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(team.getTeamId());
+             Map<String, String> root;
+             if (getEntitiesByQuery("select * from TeamScouting where team_id="+team.getTeamId()).isEmpty()) {
+                 root = DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(2630);
+                 for (String k : root.keySet()) {
+                     root.replace(k, "-");
+                 }
+             } else {
+                 root = DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(team.getTeamId());
+
+             }
             root.put("team", String.valueOf(team.getTeamId()));
             root.put("game", gameId);
             root.put("color", team.getAlliance() == 0 ? "#E34234" : "#4166f5");
@@ -189,14 +198,14 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
             Configuration cfg = new Configuration(Configuration.VERSION_2_3_27);
             FileTemplateLoader loader = new FileTemplateLoader(new File("src/main/webapp/WEB-INF/templates"));
             cfg.setTemplateLoader(loader);
-
             Template template = cfg.getTemplate("tabletTemp.html");
-
-//        Writer out = new OutputStreamWriter(System.out);
             Writer out = new FileWriter("/Users/shachardavid/table"+i+".html");
             template.process(root, out);
             out.flush();
             out.close();
+//            Runtime.getRuntime().exec(new String[] {"cmd", "/K", "Start"});
+            Runtime.getRuntime().exec(new String[] {"zsh", "/K", "Start"});
+            Runtime.getRuntime().exec("adb push /Users/shachardavid/table"+i+".html /storage/emulated/0/");
             i++;
         }
 
