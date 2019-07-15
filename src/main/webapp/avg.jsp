@@ -16,8 +16,9 @@
 
 <body class="avarage">
 	<%@include file="header.jsp"%>
-	<table class="header_container">
-		<tr class="header" >
+	
+	<table class="container">
+	<tr class="header" >
 			<td>מספר קבוצה</td>
 			<%
 	        	SortedSet<Integer> sortedKeys = new TreeSet<Integer>(DatabaseManager.get().getGameScoutingPropsRepository().getPropNameInHebrew()
@@ -30,8 +31,6 @@
 				}
 			%>
 		</tr>
-		</table>
-	<table class="container">
 		<%
 			for (HashMap<String, String> teamBar : DatabaseManager.get().getGameScoutingRepository()
 					.getPropsAvarage()) {
