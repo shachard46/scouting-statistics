@@ -171,9 +171,9 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
         return propsAvg;
     }
 
-    public void exportToTablet(String gameId, String compType) throws Exception {
+    public void exportToTablet(String gameId, String compLevel) throws Exception {
         int i = 1;
-        for (EventMatch team : DatabaseManager.get().getEventMatchRepository().getTeamsByGameAndCompType(gameId, compType)) {
+        for (EventMatch team : DatabaseManager.get().getEventMatchRepository().getTeamsByGameAndCompType(gameId, compLevel)) {
              Map<String, String> root;
              if (getEntitiesByQuery("select * from TeamScouting where team_id="+team.getTeamId()).isEmpty()) {
                  root = DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(2630);
