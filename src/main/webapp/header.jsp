@@ -16,8 +16,8 @@ pageEncoding="UTF-8"%> <%@ page import="scouting.*"%>
             <input type="text" placeholder="Search team stats" name="team" />
         </form>
     </div>
-    <div class="menuBarOption avg"><a href="avg.jsp">Avarages</a></div>
-    <div class="menuBarOption avg"><a href="avg.jsp">Graphs</a></div>
+    <div class="menuBarOption avg"><a href="avg-json.jsp">Avarages</a></div>
+    <div class="menuBarOption avg"><a href="avg-json.jsp">Graphs</a></div>
     <div class="menuBarOption search">
         <form action="oneTeam.jsp">
             <input type="text" placeholder="Search team pit stats" name="teamPit" />

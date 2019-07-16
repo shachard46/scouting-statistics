@@ -39,7 +39,7 @@
             <%
 				for (Integer propId : sortedKeys) {
 			%>
-            <td class="tooltip"><%=gameBar.get(String.valueOf(propId)) == null ? "ריק" : gameBar.get(String.valueOf(propId))%> <span class="tooltiptext"><%=gameBar.get("teamId")%></span>
+            <td class="tooltip"><%=gameBar.get(String.valueOf(propId)) == null ? "ריק" : gameBar.get(String.valueOf(propId))%> <span class="tooltiptext"><%=gameBar.get("gameId")%></span>
             </td>
 
             <%

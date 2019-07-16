@@ -203,8 +203,8 @@ img {
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 80px;
-  background-color: black;
-  color: whitesmoke;
+  background-color: #b1b0b0;
+  color: black;
   text-align: center;
   border-radius: 6px;
   padding: 5px 0;
@@ -223,7 +223,7 @@ img {
   margin-top: -5px;
   border-width: 5px;
   border-style: solid;
-  border-color: transparent transparent transparent black;
+  border-color: transparent transparent transparent #b1b0b0;
 }
 
 .tooltip:hover .tooltiptext {
