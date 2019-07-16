@@ -4,31 +4,54 @@ html {
 }
 
 body {
-  background-color: #007ea5;
+  background-color: #15a16b;
   margin: 0, auto;
   font-family: tahoma;
   margin: 0px;
 }
 
 tr {
-  border-radius: 9px;
+  border-radius: 7px;
   height: 50px;
-  background-color: #d6d6d6;
+  background-color: #797777;
 }
 
 td {
-  border-radius: 9px;
-  border: 2px solid #efefef;
+  border-radius: 7px;
+  border: 2px solid #1b1b1b;
   text-align: center;
   min-width: 100px;
+  font-size: 1.1em;
+  position: relative;
 }
-td button {
+th {
+  border-radius: 7px;
+  border: 2px solid #1b1b1b;
+  text-align: center;
+  min-width: 100px;
+  font-size: 1.1em;
+  position: sticky;
+  top: 105;
+  background-color: #494949;
+  z-index: 0;
+}
+th button {
   background-color: #007ea500;
-  border: 0;
+  border: none;
   box-shadow: none;
   font-weight: bold;
   font-size: 1em;
   font-family: "tahoma";
+  outline: none;
+}
+th:hover {
+  background-color: #585757;
+}
+.selected-th {
+  color: black !important;
+}
+.not-selected-th {
+  color: #b4b4b4 !important;
 }
 input[type="radio"] {
   width: 10% !important;
@@ -47,7 +70,7 @@ a {
   position: fixed;
   display: block;
   width: 100%;
-  background-color: #e4dede;
+  background-color: #616060;
   height: 70px;
   padding-top: 25px;
   padding-bottom: 10px;
@@ -68,7 +91,7 @@ a {
   margin-bottom: 20px;
 }
 .menuBarOption {
-  background-color: #bbb9b9;
+  background-color: #a1a1a1;
   width: 9%;
   height: 40px;
   text-align: center;
@@ -87,16 +110,19 @@ a {
   border: 1px solid grey;
   float: left;
   width: 85%;
-  background: #f1f1f1;
+  background: #a1a1a1;
+  color: black !important;
   border-radius: 7px;
   height: 60px;
 }
-
+::placeholder {
+  color: black;
+}
 .search button {
   float: right;
   width: 15% !important ;
   padding: 8px;
-  background-color: #2196f3;
+  background-color: #15a16b;
   color: white;
   font-size: 17px;
   border: 1px solid grey;
@@ -109,6 +135,7 @@ a {
   width: 13%;
 }
 .search {
+  background-color: #616060;
   width: 27% !important;
   height: 60px !important;
 }
@@ -133,7 +160,8 @@ a {
   margin-top: 150px;
   width: unset;
   padding: 30px;
-  background-color: #efefef;
+  background-color: #1b1b1b;
+  position: relative;
 }
 
 .search {
@@ -146,7 +174,7 @@ a {
 }
 
 .search button:hover {
-  background: #0b7dda;
+  background: #17b478;
 }
 
 a:hover {
@@ -160,11 +188,12 @@ img {
 }
 
 .header {
-  background-color: #9e9d9d;
+  background-color: #494949;
   height: 20px;
   border-radius: 9px;
   font-weight: bold;
-  font-size: 1.3em;
+  font-size: 1.3em !important;
+  color: #b4b4b4 !important;
 }
 .tooltip {
   position: relative;
@@ -217,6 +246,7 @@ img {
   padding-bottom: 25px !important;
   width: 4% !important;
   position: relative;
+  z-index: 5;
   display: inline-block;
 }
 
@@ -224,17 +254,16 @@ img {
   display: none;
   float: left;
   position: absolute;
-  background-color: #d6d6d6;
+  background-color: #a1a1a1;
   width: 180px;
   width: unset;
   border-radius: 7px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
+  z-index: 5;
 }
 
 .dropdown-content button {
   border-radius: 7px;
-  color: black;
   font-size: 0.7em;
   padding: 12px 16px;
   text-decoration: none;
@@ -256,6 +285,7 @@ img {
   width: 360px;
   height: 132px;
   position: relative;
+  z-index: 5 !important;
   padding-top: 15px;
 }
 
@@ -269,7 +299,7 @@ img {
   background-color: rgba(255, 255, 255, 0);
   width: 180px;
   border-radius: 7px;
-  z-index: 1;
+  z-index: 5 !important;
   height: 133px;
 }
 .dropdown-content:hover .dropright-content {
