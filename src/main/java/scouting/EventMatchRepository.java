@@ -7,12 +7,12 @@ import java.util.List;
 public class EventMatchRepository extends AbstractEntityDatabase<EventMatch> {
     @Override
     protected String getEntityTableName() {
-        return null;
+        return "EventMatches";
     }
 
     @Override
     protected EventMatch getDBEntity(EventMatch entity) {
-        return null;
+        return entity;
     }
 
     @Override

@@ -9,14 +9,13 @@ import java.io.FileWriter;
 import java.io.Writer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting> {
     public static void main(String[] args) throws Exception {
-        DatabaseManager.get().getGameScoutingRepository().exportToTablet("17", "qm");
+        for (HashMap<String, String> team : DatabaseManager.get().getGameScoutingRepository().orderByPropId("11")) {
+            System.out.println(team);
+        }
     }
 
     @Override
@@ -51,7 +50,7 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
     }
 
     public List<Integer> getAllTeamGameNumbers(int teamId) throws RuntimeException {
-        return selectElements("select distinct game_id from TeamScouting where team_id="+ teamId +";", rs -> rs.getInt("game_id"));
+        return selectElements("select distinct game_id from TeamScouting where team_id=" + teamId + ";", rs -> rs.getInt("game_id"));
 
     }
 
@@ -88,7 +87,6 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
         HashMap<String, String> avgs = new HashMap<>();
         avgs.put("teamId", String.valueOf(teamId));
         for (String propId : getPropAvarageByTeam(teamId).keySet()) {
-            System.out.println(propId);
             String propAvg = getPropAvarageByTeam(teamId).get(propId);
             propAvg = propAvg.contains(".0") ? propAvg.substring(0, propAvg.indexOf(".")) : propAvg;
 
@@ -104,10 +102,10 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
                     break;
                 case "boolean":
                     avgs.put(propId, String.format("%d/%d | %d%%", (int) (Double.parseDouble(propAvg) * getAllTeamGameNumbers(teamId).size()),
-                    		getAllTeamGameNumbers(teamId).size(), (int) (Double.parseDouble(propAvg) * 100)));
+                            getAllTeamGameNumbers(teamId).size(), (int) (Double.parseDouble(propAvg) * 100)));
                     break;
-                    default:
-                        avgs.put(propId, "fuckingshit");
+                default:
+                    avgs.put(propId, "fuckingshit");
             }
         }
         return avgs;
@@ -139,51 +137,69 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
 
     public List<HashMap<String, String>> orderByPropId(String propId) {
         List<HashMap<String, String>> propsAvg = getPropsAvarage();
-        String propType = DatabaseManager.get().getGameScoutingPropsRepository()
-                .getEntityByPropId(Integer.parseInt(propId)).getPropType();
-        for (int i = 0; i < propsAvg.size() - 1; i++) {
-            for (int j = 0; j < propsAvg.size() - i; j++) {
-                switch (propType) {
-                    case "number":
-                        if (Integer.parseInt(propsAvg.get(j).get(propId)) < Integer
-                                .parseInt(propsAvg.get(j + 1).get(propId))) {
-                            HashMap<String, String> temp = propsAvg.get(j);
-                            propsAvg.get(j).putAll(propsAvg.get(j + 1));
-                            propsAvg.get(j + 1).putAll(temp);
-                        }
-                        break;
-                    case "text":
-                        return propsAvg;
-                    case "boolean":
-                        if (Integer.parseInt(
-                                propsAvg.get(j).get(propId).substring(propsAvg.get(j).get(propId).indexOf("|") + 1,
-                                        propsAvg.get(j).get(propId).length() - 1)) < Integer
-                                .parseInt(propsAvg.get(j + 1).get(propId).substring(
-                                        propsAvg.get(j + 1).get(propId).indexOf("|") + 2,
-                                        propsAvg.get(j + 1).get(propId).length() - 1))) {
-                            HashMap<String, String> temp = propsAvg.get(j);
-                            propsAvg.get(j).putAll(propsAvg.get(j + 1));
-                            propsAvg.get(j + 1).putAll(temp);
-                        }
+            Integer.parseInt(propId);
+//        Collections.sort();
+            String propType = DatabaseManager.get().getGameScoutingPropsRepository()
+                    .getEntityByPropId(Integer.parseInt(propId)).getPropType();
+            for (int i = 0; i < propsAvg.size() - 1; i++) {
+                for (int j = 0; j < propsAvg.size() - i - 1; j++) {
+                    String propValue = propsAvg.get(j).get(propId);
+                    String propValuePlusOne = propsAvg.get(j + 1).get(propId);
+                    switch (propType) {
+                        case "number":
+                            if (Double.parseDouble(propValue) < Double.parseDouble(propValuePlusOne)) {
+                                HashMap<String, String> temp = propsAvg.get(j);
+                                propsAvg.get(j).putAll(propsAvg.get(j + 1));
+                                propsAvg.get(j + 1).putAll(temp);
+                            }
+                            break;
+                        case "text":
+                            return propsAvg;
+                        case "boolean":
+                            if (Double.parseDouble(
+                                    propValue.substring(
+                                            propValue.indexOf("|") + 2,
+                                            propValue.length() - 1)) <
+                                Double.parseDouble
+                                    (propValuePlusOne.substring(
+                                            propValuePlusOne.indexOf("|") + 2,
+                                            propValuePlusOne.length() - 1))) {
+                                HashMap<String, String> temp = propsAvg.get(j);
+                                propsAvg.get(j).putAll(propsAvg.get(j + 1));
+                                propsAvg.get(j + 1).putAll(temp);
+                            }
+                    }
                 }
             }
-        }
+//        } catch (NumberFormatException e) {
+//            e.printStackTrace();
+////            for (int i = 0; i < propsAvg.size() - 1; i++) {
+////                for (int j = 0; j < propsAvg.size() - i - 1; j++) {
+////                    if (Integer.parseInt(propsAvg.get(j).get("teamId")) < Integer
+////                            .parseInt(propValuePlusOne)) {
+////                        HashMap<String, String> temp = propsAvg.get(j);
+////                        propsAvg.get(j).putAll(propsAvg.get(j + 1));
+////                        propsAvg.get(j + 1).putAll(temp);
+////                    }
+////                }
+////            }
+//        }
         return propsAvg;
     }
 
     public void exportToTablet(String gameId, String compLevel) throws Exception {
         int i = 1;
         for (EventMatch team : DatabaseManager.get().getEventMatchRepository().getTeamsByGameAndCompType(gameId, compLevel)) {
-             Map<String, String> root;
-             if (getEntitiesByQuery("select * from TeamScouting where team_id="+team.getTeamId()).isEmpty()) {
-                 root = DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(2630);
-                 for (String k : root.keySet()) {
-                     root.replace(k, "-");
-                 }
-             } else {
-                 root = DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(team.getTeamId());
+            Map<String, String> root;
+            if (getEntitiesByQuery("select * from TeamScouting where team_id=" + team.getTeamId()).isEmpty()) {
+                root = DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(2630);
+                for (String k : root.keySet()) {
+                    root.replace(k, "-");
+                }
+            } else {
+                root = DatabaseManager.get().getGameScoutingRepository().getPropsAvarageByTeam(team.getTeamId());
 
-             }
+            }
             root.put("team", String.valueOf(team.getTeamId()));
             root.put("game", gameId);
             root.put("color", team.getAlliance() == 0 ? "#E34234" : "#4166f5");
@@ -202,13 +218,13 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
             FileTemplateLoader loader = new FileTemplateLoader(new File("src/main/webapp/WEB-INF/templates"));
             cfg.setTemplateLoader(loader);
             Template template = cfg.getTemplate("tabletTemp.html");
-            Writer out = new FileWriter("/Users/shachardavid/table"+i+".html");
+            Writer out = new FileWriter("/Users/shachardavid/table" + i + ".html");
             template.process(root, out);
             out.flush();
             out.close();
 //            Runtime.getRuntime().exec(new String[] {"cmd", "/K", "Start"});
-            Runtime.getRuntime().exec(new String[] {"zsh", "/K", "Start"});
-            Runtime.getRuntime().exec("adb push /Users/shachardavid/table"+i+".html /storage/emulated/0/");
+            Runtime.getRuntime().exec(new String[]{"zsh", "/K", "Start"});
+            Runtime.getRuntime().exec("adb push /Users/shachardavid/table" + i + ".html /storage/emulated/0/");
             i++;
         }
 

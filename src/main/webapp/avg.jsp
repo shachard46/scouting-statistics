@@ -26,7 +26,7 @@
 				
 				for (Integer propId : sortedKeys) {
 			%>
-			<td><%=DatabaseManager.get().getGameScoutingPropsRepository().getPropNameInHebrew().get(propId)%></td>
+			<td><a href="avg.jsp?orderBy=<%= propId %>"><%=DatabaseManager.get().getGameScoutingPropsRepository().getPropNameInHebrew().get(propId)%></a></td>
 			<%
 				}
 			%>
