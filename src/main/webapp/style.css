@@ -14,6 +14,7 @@ tr {
   border-radius: 7px;
   height: 50px;
   background-color: #797777;
+  position: relative;
 }
 
 td {
@@ -33,7 +34,7 @@ th {
   position: sticky;
   top: 105;
   background-color: #494949;
-  z-index: 0;
+  z-index: 1;
 }
 th button {
   background-color: #007ea500;
@@ -65,7 +66,7 @@ a {
 
 /* menuBar and footer*/
 .menuBar {
-  z-index: 1;
+  z-index: 2;
   top: 0;
   position: fixed;
   display: block;
@@ -285,8 +286,8 @@ img {
   width: 360px;
   height: 132px;
   position: relative;
-  z-index: 5 !important;
   padding-top: 15px;
+  z-index: -1;
 }
 
 .dropdown:hover .dropright {
@@ -299,7 +300,6 @@ img {
   background-color: rgba(255, 255, 255, 0);
   width: 180px;
   border-radius: 7px;
-  z-index: 5 !important;
   height: 133px;
 }
 .dropdown-content:hover .dropright-content {

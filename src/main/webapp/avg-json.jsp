@@ -99,7 +99,6 @@
 		avgs.sort((a, b) => (a.teamId > b.teamId) ? 1 : ((b.teamId > a.teamId) ? -1 : 0));
 		avgs.forEach(team => {
 			var tr = document.createElement("tr");
-			tr.style = "z-index: -1";
 			var teamTd = document.createElement("td");
 			teamTd.className = "header";
 			var value = document.createTextNode(team.teamId);
