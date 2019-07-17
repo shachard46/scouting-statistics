@@ -16,8 +16,13 @@ pageEncoding="UTF-8"%> <%@ page import="scouting.*"%>
             <input type="text" placeholder="Search team stats" name="team" />
         </form>
     </div>
+
+    <%if(request.getQueryString() != null && request.getQueryString().contains("team")){%>
     <div class="menuBarOption avg"><a href="avg-json.jsp">Avarages</a></div>
-    <div class="menuBarOption avg"><a href="avg-json.jsp">Graphs</a></div>
+    <div class="menuBarOption avg"><a href='graph.jsp?team=<%=request.getParameter("team")%>'>Graph</a></div>
+    <%} else { %>
+    <div class="menuBarOption double-avg"><a href="avg-json.jsp">Avarages</a></div>
+    <% } %>
     <div class="menuBarOption search">
         <form action="oneTeam.jsp">
             <input type="text" placeholder="Search team pit stats" name="teamPit" />

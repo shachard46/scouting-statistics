@@ -34,22 +34,23 @@
 			padding: 30px;
 			width: 1050px;
 			height: 555px;
-			margin: 50px auto;
+			margin: 120px auto;
 			text-align: center;
 		}
 	</style>
 </head>
 
 <body>
+	<%@include file="header.jsp" %>
 	<div class="div-container">
 		<canvas id="myChart"></canvas>
 	</div>
 	<script>
 		function getRandomColor() {
-			var letters = '0123456789ABCDEF';
+			var letters = '0123456789A';
 			var color = '#';
-			for (var i = 0; i < 3; i++) {
-				color += letters[Math.floor(Math.random() * 16)];
+			for (var i = 0; i < 6; i++) {
+				color += letters[Math.floor(Math.random() * 11)];
 			}
 			return color;
 		}

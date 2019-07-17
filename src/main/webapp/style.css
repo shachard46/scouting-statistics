@@ -138,6 +138,9 @@ a {
 .avg {
   width: 13%;
 }
+.double-avg {
+  width: 29% !important;
+}
 .search {
   background-color: #616060;
   width: 27% !important;
