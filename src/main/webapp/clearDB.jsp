@@ -3,7 +3,12 @@
 	pageEncoding="UTF-8"%>
 <%
 	if (request.getParameter("password").equals("ScouterDagan")) {
-		DatabaseManager.get().getGameScoutingRepository().clearTable();
+		// DatabaseManager.get().getGameScoutingRepository().clearTable(); 
+%>
+<script type="text/javascript">
+	alert("you were right, you not are stupid");
+	location.href = "avg.jsp";
+</script><%
 	} else {
 %>
 <script type="text/javascript">

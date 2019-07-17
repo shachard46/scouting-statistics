@@ -16,6 +16,9 @@ tr {
   background-color: #797777;
   position: relative;
 }
+tbody tr:nth-child(odd) {
+  background-color: #8f8e8e;
+}
 
 td {
   border-radius: 7px;
@@ -108,9 +111,9 @@ a {
 .search input[type="text"] {
   padding: 10px;
   font-size: 17px;
-  border: 1px solid grey;
+  border: 1px solid #a1a1a1;
   float: left;
-  width: 85%;
+  width: 84.2%;
   background: #a1a1a1;
   color: black !important;
   border-radius: 7px;
@@ -126,7 +129,7 @@ a {
   background-color: #15a16b;
   color: white;
   font-size: 17px;
-  border: 1px solid grey;
+  border: none;
   border-left: none;
   cursor: pointer;
   border-radius: 6px;
@@ -159,6 +162,7 @@ a {
   border-radius: 9px;
   margin: auto;
   margin-top: 150px;
+  margin-left: 10px;
   width: unset;
   padding: 30px;
   background-color: #1b1b1b;
@@ -179,7 +183,7 @@ a {
 }
 
 a:hover {
-  color: #007ea5;
+  color: #128357;
 }
 
 img {
@@ -203,8 +207,10 @@ img {
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 80px;
-  background-color: #b1b0b0;
+  /* background-color: #b1b0b0; */
+  background-color: #15a16b;
   color: black;
+  font-weight: bolder;
   text-align: center;
   border-radius: 6px;
   padding: 5px 0;
@@ -223,7 +229,7 @@ img {
   margin-top: -5px;
   border-width: 5px;
   border-style: solid;
-  border-color: transparent transparent transparent #b1b0b0;
+  border-color: transparent transparent transparent #15a16b;
 }
 
 .tooltip:hover .tooltiptext {
@@ -310,6 +316,8 @@ img {
   height: 43px;
   border-radius: 7px;
   margin-bottom: 5px;
+  background: #d0d0d0;
+  border: 1px solid #d0d0d0;
 }
 #comp-name {
   position: absolute;
@@ -318,6 +326,8 @@ img {
   width: 180px;
   height: 43px;
   border-radius: 7px;
+  background: #d0d0d0;
+  border: 1px solid #d0d0d0;
 }
 #password {
   position: absolute;
@@ -326,7 +336,6 @@ img {
   width: 180px;
   height: 43px;
   border-radius: 7px;
-}
-#tablet-a:hover #tablet-input {
-  visibility: visible;
+  background: #d0d0d0;
+  border: 1px solid #d0d0d0;
 }

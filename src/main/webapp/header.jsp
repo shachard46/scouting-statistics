@@ -49,10 +49,10 @@ pageEncoding="UTF-8"%> <%@ page import="scouting.*"%>
                     <input type="text" name="game_id" id="tablet-input" placeholder="Enter team number and comp level">
                 </form>
                 <form id="import" action="importFromTBA.jsp" method="GET" style="margin: 0px">
-                    <input type="text" name="game_id" id="comp-name" placeholder="Enter comp name">
+                    <input type="text" name="comp-name" id="comp-name" placeholder="Enter comp name">
                 </form>
-                <form id="clear" action="importFromTBA.jsp" method="POST" style="margin: 0px">
-                    <input type="password" name="game_id" id="password" placeholder="Enter delete password">
+                <form id="clear" action="clearDB.jsp" method="POST" style="margin: 0px">
+                    <input type="password" name="password" id="password" placeholder="Enter delete password">
                 </form>
             </div>
         </div>
