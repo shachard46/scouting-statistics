@@ -20,6 +20,7 @@
 	<table class="container">
 		<thead>
 			<tr class="header">
+				<td>מספר קבוצה</td>
 				<td>מספר משחק</td>
 				<%
 					SortedSet<Integer> sortedKeys = new TreeSet<Integer>(DatabaseManager.get().getGameScoutingPropsRepository().getPropNameInHebrew()
@@ -38,6 +39,7 @@
 			for (HashMap<String, String> gameBar : DatabaseManager.get().getGameScoutingRepository()
 					.getTeamPropsByGame(Integer.parseInt(request.getParameter("team")))) {
 		%><tr>
+				<td class="tooltip header"><%=gameBar.get("teamId")%></td>
 				<td class="tooltip header"><%=gameBar.get("gameId")%></td>
 				<%
 				for (Integer propId : sortedKeys) {
@@ -54,45 +56,6 @@
 			</tr>
 		</tbody>
 	</table>
-	<%-- <table class="header_container">
-		<tr class="header" >
-			<td>מספר קבוצה</td>
-			<%
-	        	SortedSet<Integer> sortedKeys = new TreeSet<Integer>(DatabaseManager.get().getGameScoutingPropsRepository().getPropNameInHebrew()
-						.keySet());
-				
-				for (Integer propId : sortedKeys) {
-			%>
-	<td><%=DatabaseManager.get().getGameScoutingPropsRepository().getPropNameInHebrew().get(propId)%></td>
-	<%
-				}
-			%>
-	</tr>
-	</table>
-	<table class="container">
-		<%
-			for (HashMap<String, String> teamBar : DatabaseManager.get().getGameScoutingRepository()
-					.getPropsAvarage()) {
-		%>
-		<tr>
-			<td class="tooltip header"><%=teamBar.get("teamId")%></td>
-			<%
-				for (Integer propId : sortedKeys) {
-			%>
-			<td class="tooltip"><%=teamBar.get(String.valueOf(propId))%> <span
-					class="tooltiptext"><%=teamBar.get("teamId")%></span></td>
-
-			<%
-				}
-			%>
-
-		</tr>
-		<%
-			}
-		%>
-
-	</table> --%>
-	<button onclick="location.href = 'graph.jsp?team=<%=request.getParameter("team")%>'">Graph</button>
 </body>
 
 </html>

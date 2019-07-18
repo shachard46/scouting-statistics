@@ -20,21 +20,17 @@
 	<title>FirstForum</title>
 	<link rel="stylesheet" type="text/css" href="style.css" />
 	<style>
-		h1 {
-			text-align: center;
-			text-decoration: underline;
-			font-size: 2.8em;
-		}
-
-		#myChart {}
-
 		.div-container {
+			position: absolute;
 			background-color: #1b1b1b;
 			border-radius: 7px;
 			padding: 30px;
-			width: 1050px;
+			width: unset;
+			/*1050px;*/
 			height: 555px;
-			margin: 120px auto;
+			top: 120;
+			left: 150;
+			right: 150;
 			text-align: center;
 		}
 	</style>

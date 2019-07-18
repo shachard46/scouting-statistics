@@ -16,9 +16,9 @@ tr {
   background-color: #797777;
   position: relative;
 }
-tbody tr:nth-child(odd) {
+/* tbody tr:nth-child(odd) {
   background-color: #8f8e8e;
-}
+} */
 
 td {
   border-radius: 7px;
@@ -268,7 +268,7 @@ img {
   width: 180px;
   width: unset;
   border-radius: 7px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 16px 32px 0px rgba(0, 0, 0, 0.5);
   z-index: 5;
 }
 
@@ -320,6 +320,7 @@ img {
   border-radius: 7px;
   margin-bottom: 5px;
   background: #d0d0d0;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   border: 1px solid #d0d0d0;
 }
 #comp-name {
@@ -330,6 +331,7 @@ img {
   height: 43px;
   border-radius: 7px;
   background: #d0d0d0;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   border: 1px solid #d0d0d0;
 }
 #password {
@@ -340,5 +342,6 @@ img {
   height: 43px;
   border-radius: 7px;
   background: #d0d0d0;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   border: 1px solid #d0d0d0;
 }
