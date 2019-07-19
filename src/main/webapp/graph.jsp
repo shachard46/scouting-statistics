@@ -1,10 +1,15 @@
-<%@page import="java.util.Set"%>
-<%@page import="java.util.HashMap"%>
-<%@page import="java.util.List"%>
+<%@page import="org.json.simple.JSONObject"%>
+<%@page import="java.util.*"%>
 <%@page import="scouting.DatabaseManager"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%
+	Map<String, Object> m = new HashMap<String, Object>();
+	Map<String, Object> props = new HashMap<String, Object>();
+	m.put("props", DatabaseManager.get().getGameScoutingRepository()
+			.getTeamPropsByGame(Integer.parseInt(request.getParameter("team"))));
+	props.put("props", DatabaseManager.get().getGameScoutingPropsRepository().getPropsAsMap());
+	
 	List<HashMap<String, String>> gameBars = DatabaseManager.get().getGameScoutingRepository()
 			.getTeamPropsByGame(Integer.parseInt(request.getParameter("team")));
 	
@@ -17,6 +22,7 @@
 <head>
 	<!-- <link rel="stylesheet" type="text/css" href="style.css" /> -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+	<script src="functions.js"></script>
 	<title>FirstForum</title>
 	<link rel="stylesheet" type="text/css" href="style.css" />
 	<style>
@@ -42,81 +48,15 @@
 		<canvas id="myChart"></canvas>
 	</div>
 	<script>
-		function getRandomColor() {
-			var letters = '0123456789A';
-			var color = '#';
-			for (var i = 0; i < 6; i++) {
-				color += letters[Math.floor(Math.random() * 11)];
-			}
-			return color;
-		}
+
 	</script>
 	<script>
-		var ctx = document.getElementById('myChart').getContext('2d');
-		var myChart = new Chart(ctx,
-			{
-				type: 'line',
-				data: {
-					labels: <%=gameNumbers%>,
-				datasets: [
-						<%for(String propId: keySet) {
-					if (!propId.equals("teamId") && !propId.equals("gameId")
-						&& DatabaseManager.get().getGameScoutingPropsRepository()
-							.getEntityByPropId(Integer.parseInt(propId)).getPropType().equals("number")) {%>
-								{
-									label: '<%=DatabaseManager.get().getGameScoutingPropsRepository().getPropNameInHebrew().get(Integer.parseInt(propId)) %> ',
-									fill: false,
-									data: [<%for(int i = 0; i<gameNumbers.size(); i++) {%>
-									<%=gameBars.get(i).get(propId) + ", " %>
-									<%}%>],
-
-		borderColor: [
-			getRandomColor(),
-		],
-			borderWidth : 4
-		},
-								<%}
-			}%>
-		]
-	},
-		options: {
-			title: {
-				display: true,
-					text: 'קבוצה מספר <%=gameBars.get(0).get("teamId")%>',
-						fontSize: 45,
-							fontFamily: "tahoma",
-	        },
-			legend: {
-				labels: {
-					fontColor: "#b4b4b4",
-						fontSize: 15,
-							fontFamily: "tahoma"
-				},
-			},
-			scales: {
-				xAxes: [{
-					ticks: {
-						fontColor: "#b4b4b4",
-						fontSize: 20,
-						fontFamily: "tahoma"
-					},
-					gridLines: {
-						color: "#b4b4b4",
-					},
-				}],
-					yAxes: [{
-						ticks: {
-							fontColor: "#b4b4b4",
-							fontSize: 20,
-							fontFamily: "tahoma",
-							beginAtZero: true,
-						},
-						gridLines: { color: "#b4b4b4" }
-					}]
-			}
-
-		}
-				});
+		var games = <%=JSONObject.toJSONString(m) %>;
+		games = games.props;
+		var props = <%=JSONObject.toJSONString(props) %>;
+		props = props.props;
+		console.log(props);
+		// createGraph(<%=gameNumbers%>, propsNames, games);
 	</script>
 
 </body>

@@ -5,11 +5,13 @@ public class GameScoutingProps {
     private String propDesc;
     private String propType;
     private Integer propChild;
+    private String hebrewName;
 
-    public GameScoutingProps(String propDesc, String propType, Integer propChild) {
+    public GameScoutingProps(String propDesc, String propType, Integer propChild, String hebrewName) {
         this.propDesc = propDesc;
         this.propType = propType;
         this.propChild = propChild;
+        this.hebrewName = hebrewName;
     }
 
     public int getPropId() {
@@ -42,5 +44,13 @@ public class GameScoutingProps {
 
     public void setPropChild(Integer propChild) {
         this.propChild = propChild;
+    }
+
+    public String getHebrewName() {
+        return hebrewName;
+    }
+
+    public void setHebrewName(String hebrewName) {
+        this.hebrewName = hebrewName;
     }
 }

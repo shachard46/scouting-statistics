@@ -1,3 +1,11 @@
+function getRandomColor() {
+  var letters = "0123456789A";
+  var color = "#";
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 11)];
+  }
+  return color;
+}
 function orderBy(avgs, propId) {
   avgs = avgs.props;
   if (avgs[0][propId][avgs[0][propId].length - 1] === "%") {
@@ -82,5 +90,70 @@ function createAvgsTable(avgs) {
       }
     }
     document.getElementsByTagName("tbody")[0].appendChild(tr);
+  });
+}
+
+function createGraph(labels, propsLabels, data) {
+  console.log("data[0].keys: ", Object.keys(data[0]));
+  console.log("data[0].keys: ", Object.values(data[0]));
+  var ctx = document.getElementById("myChart").getContext("2d");
+  var myChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: Object.keys(data[0]).map(key => ({
+        label: propsLabels[key],
+        fill: false,
+        data: [data[key]],
+        borderColor: [getRandomColor()],
+        borderWidth: 4
+      }))
+    },
+    options: {
+      title: {
+        display: true,
+        text: "קבוצה מספר" + data[0].teamId,
+        fontSize: 45,
+        fontFamily: "tahoma"
+      },
+      legend: {
+        labels: {
+          fontColor: "#b4b4b4",
+          fontSize: 15,
+          fontFamily: "tahoma"
+        }
+      },
+      scales: {
+        xAxes: [
+          {
+            ticks: {
+              fontColor: "#b4b4b4",
+              fontSize: 20,
+              fontFamily: "tahoma"
+            },
+            gridLines: {
+              color: "#b4b4b4"
+            },
+            legend: {
+              fontColor: "#b4b4b4",
+              fontSize: 15,
+              fontFamily: "tahoma",
+              text: "מספרי משחק"
+            }
+          }
+        ],
+        yAxes: [
+          {
+            ticks: {
+              fontColor: "#b4b4b4",
+              fontSize: 20,
+              fontFamily: "tahoma",
+              beginAtZero: true
+            },
+            gridLines: { color: "#b4b4b4" }
+          }
+        ]
+      }
+    }
   });
 }
