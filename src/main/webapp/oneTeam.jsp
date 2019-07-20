@@ -11,7 +11,7 @@
 	<%--
     <script src="functions.js"></script>
     --%>
-	<title>FirstForum</title>
+	<title>ScoutingStatictics</title>
 </head>
 
 <body class="avarage">

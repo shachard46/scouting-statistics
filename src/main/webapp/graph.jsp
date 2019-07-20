@@ -25,7 +25,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 	<script src="functions.js"></script>
-	<title>FirstForum</title>
+	<title>ScoutingStatictics</title>
 	<link rel="stylesheet" type="text/css" href="style.css" />
 	<style>
 		.div-container {

@@ -15,7 +15,7 @@
 	<script type="text/javascript">
 		var avgs = <%=JSONObject.toJSONString(m) %>;
 	</script>
-	<title>FirstForum</title>
+	<title>ScoutingStatictics</title>
 </head>
 
 <body class="avarage">
