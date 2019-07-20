@@ -22,6 +22,8 @@
 <head>
 	<!-- <link rel="stylesheet" type="text/css" href="style.css" /> -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 	<script src="functions.js"></script>
 	<title>FirstForum</title>
 	<link rel="stylesheet" type="text/css" href="style.css" />
@@ -51,17 +53,11 @@
 
 	</script>
 	<script>
-		var games = <%=JSONObject.toJSONString(m) %>;
-		games = games.props;
-		var props = <%=JSONObject.toJSONString(props) %>;
-		props = props.props;
-		var newGames = [];
-		games.forEach(game => {
-			// console.log(props[14].propType);
-			newGames.push(Object.keys(game).filter(propId => game[propId] === "0"));
-		});
-		console.log(newGames);
-// createGraph(<%=gameNumbers%>, propsNames, games);
+		let games = <%=JSONObject.toJSONString(m) %>.props;
+		let props = <%=JSONObject.toJSONString(props) %>.props;
+		games = games.map(game => _.pick(game, (value, key) => props[key] && props[key].propType === "number" || key === "teamId"));
+		props = _.pick(props, (value, key) => props[key] && props[key].propType === "number");
+		createGraph(<%=gameNumbers %>, props, games);
 	</script>
 
 </body>

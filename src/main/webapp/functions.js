@@ -94,17 +94,15 @@ function createAvgsTable(avgs) {
 }
 
 function createGraph(labels, propsLabels, data) {
-  console.log("data[0].keys: ", Object.keys(data[0]));
-  console.log("data[0].keys: ", Object.values(data[0]));
   var ctx = document.getElementById("myChart").getContext("2d");
   var myChart = new Chart(ctx, {
     type: "line",
     data: {
       labels: labels,
-      datasets: Object.keys(data[0]).map(key => ({
-        label: propsLabels[key],
+      datasets: Object.keys(propsLabels).map(key => ({
+        label: propsLabels[key].name,
         fill: false,
-        data: [data[key]],
+        data: labels.map(label => data[labels.indexOf(label)][key]),
         borderColor: [getRandomColor()],
         borderWidth: 4
       }))
@@ -112,7 +110,7 @@ function createGraph(labels, propsLabels, data) {
     options: {
       title: {
         display: true,
-        text: "קבוצה מספר" + data[0].teamId,
+        text: "קבוצה מספר " + data[0].teamId,
         fontSize: 45,
         fontFamily: "tahoma"
       },
@@ -155,5 +153,11 @@ function createGraph(labels, propsLabels, data) {
         ]
       }
     }
+  });
+}
+
+function doAsyncCall() {
+  axios.get("radar.jsp").then(res => {
+    console.log(res.data);
   });
 }

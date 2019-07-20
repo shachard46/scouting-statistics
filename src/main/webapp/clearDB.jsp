@@ -7,14 +7,13 @@
 %>
 <script type="text/javascript">
 	alert("you were right, you not are stupid");
-	location.href = "avg.jsp";
-</script><%
+<%
 	} else {
 %>
 <script type="text/javascript">
 	alert("you were wrong, you are stupid");
-	location.href = "avg.jsp";
-</script>
 <%
 	}
 %>
+	location.href = "avg-json.jsp";
+</script>
