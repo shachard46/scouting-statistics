@@ -12,7 +12,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import java.io.File;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.HashMap;
 
 public class GameScoutingPropsRepository extends AbstractEntityDatabase<GameScoutingProps> {
