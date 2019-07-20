@@ -77,12 +77,12 @@ public class GameScoutingPropsRepository extends AbstractEntityDatabase<GameScou
         return getSingleEntityByQuery(sql);
     }
 
-    public Map<Integer, Map<String, String>> getPropAsMap(int id) throws Exception {
+    public Map<Integer, Map<String, String>> getPropsAsMap() throws Exception {
         Map<Integer, Map<String, String>> propsMap = new HashMap<>();
         for (int propId : getPropNameInHebrew().keySet()) {
             Map<String, String> entry = new HashMap<>();
-            entry.put("propType", getEntityById(propId).getPropType());
-            entry.put("propHebName", getEntityById(propId).getHebrewName());
+            entry.put("propType", getEntityByPropId(propId).getPropType());
+            entry.put("propHebName", getEntityByPropId(propId).getHebrewName());
             propsMap.put(propId, entry);
         }
         return propsMap;

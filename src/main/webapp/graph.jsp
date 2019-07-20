@@ -55,8 +55,13 @@
 		games = games.props;
 		var props = <%=JSONObject.toJSONString(props) %>;
 		props = props.props;
-		console.log(props);
-		// createGraph(<%=gameNumbers%>, propsNames, games);
+		var newGames = [];
+		games.forEach(game => {
+			// console.log(props[14].propType);
+			newGames.push(Object.keys(game).filter(propId => game[propId] === "0"));
+		});
+		console.log(newGames);
+// createGraph(<%=gameNumbers%>, propsNames, games);
 	</script>
 
 </body>
