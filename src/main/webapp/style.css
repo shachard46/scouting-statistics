@@ -165,7 +165,6 @@ a {
 .container {
   border-spacing: 4px;
   border-radius: 9px;
-  margin: auto;
   margin-top: 150px;
   margin-left: 10px;
   width: unset;
@@ -173,7 +172,9 @@ a {
   background-color: #1b1b1b;
   position: relative;
 }
-
+.pit-container {
+  margin: 150 auto !important;
+}
 .search {
   padding: 0px !important;
 }

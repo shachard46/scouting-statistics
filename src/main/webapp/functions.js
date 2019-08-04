@@ -92,7 +92,27 @@ function createAvgsTable(avgs) {
     document.getElementsByTagName("tbody")[0].appendChild(tr);
   });
 }
-
+function createPitScoutingTable(pitScouting, teamId) {
+  pitScouting = pitScouting.props;
+  var table = document.getElementsByTagName("table")[0];
+  var team = document.createElement("tr");
+  team.insertCell(0);
+  team.insertCell(1);
+  team.cells[0].className = "header";
+  team.cells[1].className = "header";
+  team.cells[0].append("מספר קבוצה");
+  team.cells[1].append(teamId);
+  table.appendChild(team);
+  for (var prop in pitScouting) {
+    var tr = document.createElement("tr");
+    tr.insertCell(0);
+    tr.insertCell(1);
+    tr.cells[0].append(prop);
+    tr.cells[0].className = "header";
+    tr.cells[1].append(pitScouting[prop]);
+    table.appendChild(tr);
+  }
+}
 function createGraph(labels, propsLabels, data) {
   var ctx = document.getElementById("myChart").getContext("2d");
   var myChart = new Chart(ctx, {
