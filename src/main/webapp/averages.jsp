@@ -11,9 +11,11 @@
 
 <head>
 	<link rel="stylesheet" type="text/css" href="style.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
 	<script src="functions.js"></script>
 	<script type="text/javascript">
 		var avgs = <%=JSONObject.toJSONString(m) %>;
+		avgs = avgs.props;
 	</script>
 	<title>ScoutingStatictics</title>
 </head>
@@ -27,12 +29,12 @@
 				<td>מספר קבוצה</td>
 				<%
 				SortedSet<Integer> sortedKeys = new TreeSet<Integer>(
-						DatabaseManager.get().getGameScoutingPropsRepository().getPropNameInHebrew().keySet());
+						GameScoutingPropsRepository.getPropNameInHebrew().keySet());
 
 				for (Integer propId : sortedKeys) {
 					%>
 				<th id="<%=propId%>"><button style="color: #b4b4b4;"
-						onclick="orderBy(avgs, '<%=propId%>')"><%=DatabaseManager.get().getGameScoutingPropsRepository().getPropNameInHebrew().get(propId)%></button>
+						onclick="orderBy(avgs, '<%=propId%>')"><%=GameScoutingPropsRepository.getPropNameInHebrew().get(propId)%></button>
 				</th>
 				<%
 		}

@@ -4,8 +4,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@page import="scouting.*"%>
+<% if(request.getParameter("team").isEmpty()) { 
+	response.sendRedirect("averages.jsp");
+	return;
+}%>
 <html>
-
 <head>
 	<link rel="stylesheet" type="text/css" href="style.css" />
 	<%--

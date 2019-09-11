@@ -15,5 +15,5 @@
 <%
 	}
 %>
-	location.href = "avg-json.jsp";
+	location.href = "averages.jsp";
 </script>

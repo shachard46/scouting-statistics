@@ -7,7 +7,6 @@ function getRandomColor() {
   return color;
 }
 function orderBy(avgs, propId) {
-  avgs = avgs.props;
   if (avgs[0][propId][avgs[0][propId].length - 1] === "%") {
     avgs.sort((a, b) => {
       var first = a[propId].substring(
@@ -48,7 +47,7 @@ function orderBy(avgs, propId) {
           td.textContent = avgs[i].teamId;
         }
       });
-      i = i + 1;
+      i++;
     }
   });
 
@@ -66,8 +65,20 @@ function orderBy(avgs, propId) {
   return false;
 }
 
+function filterByTeamNumbers(avgs) {
+  var teamStr = document.getElementsByName("filterTeams")[0].value;
+  teamStr = teamStr ? teamStr.trim() : "";
+  if (teamStr !== "") {
+    var teams = _.map(teamStr.split(","), item => item.trim());
+    return _.filter(avgs, item => _.contains(teams, item.teamId));
+  }
+  return avgs;
+}
+
 function createAvgsTable(avgs) {
-  avgs = avgs.props;
+  document.getElementsByTagName("tbody")[0].remove();
+  var tbody = document.createElement("tbody");
+  document.getElementsByTagName("table")[0].appendChild(tbody);
   avgs.sort((a, b) => (a.teamId > b.teamId ? 1 : b.teamId > a.teamId ? -1 : 0));
   avgs.forEach(team => {
     var tr = document.createElement("tr");
@@ -89,7 +100,7 @@ function createAvgsTable(avgs) {
         tr.appendChild(td);
       }
     }
-    document.getElementsByTagName("tbody")[0].appendChild(tr);
+    tbody.appendChild(tr);
   });
 }
 function createPitScoutingTable(pitScouting, teamId) {
