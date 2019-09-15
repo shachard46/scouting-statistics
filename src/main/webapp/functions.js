@@ -91,11 +91,10 @@ function createAvgsTable(avgs) {
       if (prop != "teamId") {
         var td = document.createElement("td");
         td.className = "tooltip";
-        var value = document.createTextNode(team[prop]);
         var tooltip = document.createElement("span");
         tooltip.className = "tooltiptext";
         tooltip.textContent = teamTd.textContent;
-        td.appendChild(value);
+        td.textContent = team[prop];
         td.appendChild(tooltip);
         tr.appendChild(td);
       }
@@ -187,8 +186,26 @@ function createGraph(labels, propsLabels, data) {
   });
 }
 
-function doAsyncCall() {
-  axios.get("radar.jsp").then(res => {
-    console.log(res.data);
+function addCombination(colomns, newColoumn, newColoumnName) {
+  var tbody = document.getElementsByTagName("tbody")[0].childNodes;
+  var thead = Array.from(document.getElementsByTagName("thead")[0].childNodes);
+  thead
+    .filter(el => el.tagName === "TR")
+    .forEach(tr => {
+      var th = document.createElement("th");
+      th.id = newColoumn;
+      th.textContent = newColoumnName;
+      tr.insertBefore(th, tr.children[newColoumn]);
+    });
+
+  tbody.forEach(tr => {
+    var newcolomnVal = colomns.reduce(
+      (acc, curr) =>
+        acc + Number(tr.childNodes[curr].childNodes[0].textContent),
+      0
+    );
+    var td = document.createElement("td");
+    td.textContent = newcolomnVal;
+    tr.insertBefore(td, tr.childNodes[newColoumn]);
   });
 }

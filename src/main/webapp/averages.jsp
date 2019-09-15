@@ -46,6 +46,8 @@
 	</table>
 	<script>
 		createAvgsTable(avgs);
+		addCombination([7, 8], 9, "סה״כ כדורים");
+		addCombination([11, 12, 13], 14, "סה״כ דיסקים");
 	</script>
 </body>
 
