@@ -4,8 +4,9 @@
 	pageEncoding="UTF-8"%>
 <%@page import="scouting.*"%>
 <%
-	Map<String, Object> m = new HashMap<String, Object>();
-	m.put("props", DatabaseManager.get().getGameScoutingRepository().getPropsAvarage());
+	Map<String, Object> avgs = new HashMap<String, Object>();
+	Map<Integer, String> headers = GameScoutingPropsRepository.getPropNameInHebrew();
+	avgs.put("props", DatabaseManager.get().getGameScoutingRepository().getPropsAvarage());
 %>
 <html>
 
@@ -14,8 +15,11 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
 	<script src="functions.js"></script>
 	<script type="text/javascript">
-		var avgs = <%=JSONObject.toJSONString(m) %>;
+		var avgs = <%=JSONObject.toJSONString(avgs) %>;
+		var headers = <%=JSONObject.toJSONString(headers) %>;
 		avgs = avgs.props;
+		addCombination(headers, avgs, [6, 7], 7.5, "סה״כ כדורים");
+		addCombination(headers, avgs, [10, 11, 9], 11.5, "סה״כ דיסקים");
 	</script>
 	<title>ScoutingStatictics</title>
 </head>
@@ -24,30 +28,14 @@
 	<%@include file="header.jsp"%>
 
 	<table class="container">
-		<thead>
-			<tr class="header">
-				<td>מספר קבוצה</td>
-				<%
-				SortedSet<Integer> sortedKeys = new TreeSet<Integer>(
-						GameScoutingPropsRepository.getPropNameInHebrew().keySet());
-
-				for (Integer propId : sortedKeys) {
-					%>
-				<th id="<%=propId%>"><button style="color: #b4b4b4;"
-						onclick="orderBy(avgs, '<%=propId%>')"><%=GameScoutingPropsRepository.getPropNameInHebrew().get(propId)%></button>
-				</th>
-				<%
-		}
-		%>
-			</tr>
-		</thead>
 		<tbody>
 		</tbody>
 	</table>
 	<script>
+		createAvgsHeaders(headers);
 		createAvgsTable(avgs);
-		addCombination([7, 8], 9, "סה״כ כדורים");
-		addCombination([11, 12, 13], 14, "סה״כ דיסקים");
+		console.log(avgs);
+		console.log(headers);
 	</script>
 </body>
 

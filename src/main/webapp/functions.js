@@ -75,32 +75,48 @@ function filterByTeamNumbers(avgs) {
   return avgs;
 }
 
+function createAvgsHeaders(headers) {
+  var thead = document.createElement("thead");
+  var tr = document.createElement("tr");
+  tr.innerHTML = "<td class='header'>מספר קבוצה</td>";
+  thead.appendChild(tr);
+  document.getElementsByTagName("table")[0].appendChild(thead);
+  _.keys(headers)
+    .sort((a, b) =>
+      Number(a) > Number(b) ? 1 : Number(b) > Number(a) ? -1 : 0
+    )
+    .map(
+      key =>
+        `<th class="header" onclick="orderBy(avgs, ${key})">${headers[key]}</th>`
+    )
+    .forEach(e => (tr.innerHTML += e));
+  console.log(headers);
+}
+
 function createAvgsTable(avgs) {
   document.getElementsByTagName("tbody")[0].remove();
   var tbody = document.createElement("tbody");
   document.getElementsByTagName("table")[0].appendChild(tbody);
   avgs.sort((a, b) => (a.teamId > b.teamId ? 1 : b.teamId > a.teamId ? -1 : 0));
   avgs.forEach(team => {
-    var tr = document.createElement("tr");
-    var teamTd = document.createElement("td");
-    teamTd.className = "header";
-    var value = document.createTextNode(team.teamId);
-    teamTd.appendChild(value);
-    tr.appendChild(teamTd);
-    for (var prop in team) {
-      if (prop != "teamId") {
-        var td = document.createElement("td");
-        td.className = "tooltip";
-        var tooltip = document.createElement("span");
-        tooltip.className = "tooltiptext";
-        tooltip.textContent = teamTd.textContent;
-        td.textContent = team[prop];
-        td.appendChild(tooltip);
-        tr.appendChild(td);
-      }
-    }
+    const tr = document.createElement("TR");
+    const teamId = document.createElement("TD");
+    teamId.textContent = team.teamId;
+    tr.appendChild(teamId);
+    _.keys(team)
+      .sort((a, b) =>
+        Number(a) > Number(b) ? 1 : Number(b) > Number(a) ? -1 : 0
+      )
+      .map(key => {
+        if (key !== "teamId") {
+          return `<td class="tooltip"> ${team[key]} <span class="tooltiptext">${team.teamId} </span>`;
+        }
+        return "";
+      })
+      .forEach(element => (tr.innerHTML += element));
     tbody.appendChild(tr);
   });
+  console.log(avgs);
 }
 function createPitScoutingTable(pitScouting, teamId) {
   pitScouting = pitScouting.props;
@@ -186,26 +202,23 @@ function createGraph(labels, propsLabels, data) {
   });
 }
 
-function addCombination(colomns, newColoumn, newColoumnName) {
-  var tbody = document.getElementsByTagName("tbody")[0].childNodes;
-  var thead = Array.from(document.getElementsByTagName("thead")[0].childNodes);
-  thead
-    .filter(el => el.tagName === "TR")
-    .forEach(tr => {
-      var th = document.createElement("th");
-      th.id = newColoumn;
-      th.textContent = newColoumnName;
-      tr.insertBefore(th, tr.children[newColoumn]);
-    });
+function addCombination(headers, avgs, colomns, newColoumn, newColoumnName) {
+  console.log(avgs);
 
-  tbody.forEach(tr => {
-    var newcolomnVal = colomns.reduce(
-      (acc, curr) =>
-        acc + Number(tr.childNodes[curr].childNodes[0].textContent),
-      0
-    );
-    var td = document.createElement("td");
-    td.textContent = newcolomnVal;
-    tr.insertBefore(td, tr.childNodes[newColoumn]);
-  });
+  headers[newColoumn] = newColoumnName;
+  avgs.map(
+    team =>
+      (team[newColoumn] = colomns.reduce(
+        (acc, curr) => acc + Number(team[curr]),
+        0
+      ))
+  );
+  console.log(avgs);
 }
+// return _.keys(team).map(colomn => {
+//       if ((colomn = newColoumn)) {
+//         return colomns.reduce((acc, curr) => acc + Number(team[curr]), 0);
+//       }
+//       return team[colomn];
+//     });
+//   });
