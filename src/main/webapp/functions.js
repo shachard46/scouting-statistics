@@ -7,6 +7,8 @@ function getRandomColor() {
   return color;
 }
 function orderBy(avgs, propId) {
+  console.log(avgs[0].teamId);
+
   if (avgs[0][propId][avgs[0][propId].length - 1] === "%") {
     avgs.sort((a, b) => {
       var first = a[propId].substring(
@@ -30,36 +32,16 @@ function orderBy(avgs, propId) {
       a[propId] > b[propId] ? -1 : b[propId] > a[propId] ? 1 : 0
     );
   }
-  document.getElementsByTagName("tbody")[0].childNodes.forEach(tr => {
-    if (tr.tagName == "TR") {
-      var i = 0;
-      var j = 0;
-      tr.childNodes.forEach(td => {
-        if (td.className != "header") {
-          td.textContent = avgs[i][j];
-          var tooltip = document.createElement("span");
-          tooltip.className = "tooltiptext";
-          tooltip.textContent = avgs[i].teamId;
-          td.appendChild(tooltip);
-          j++;
-        } else {
-          td.textContent = avgs[i].teamId;
-        }
-      });
-      i++;
-    }
-  });
-  console.log(avgs);
+  createAvgsTable(avgs, false);
+  console.log(avgs[0].teamId);
   document.getElementsByTagName("thead")[0].childNodes.forEach(tr => {
-    tr.childNodes.forEach(th => {
-      if (th.tagName == "TH") {
-        if (th.id == propId) {
-          th.childNodes[0].className = "selected-th";
-        } else {
-          th.childNodes[0].className = "not-selected-th";
-        }
-      }
-    });
+    var x = Array.from(tr.childNodes)
+      .filter(th => th.tagName == "TH")
+      .map(th =>
+        th.id == propId
+          ? (th.querySelectorAll("button")[0].className = "selected-th")
+          : (th.querySelectorAll("button")[0].className = "not-selected-th")
+      );
   });
   return false;
 }
@@ -86,17 +68,24 @@ function createAvgsHeaders(headers) {
     )
     .map(
       key =>
-        `<th class="header" id=${key} onclick="orderBy(avgs, ${key})">${headers[key]}</th>`
+        `<th class="header" id=${key}>
+        <button style="color: #b4b4b4;"	onclick="orderBy(avgs, ${key})">
+        ${headers[key]}
+        </button>
+        </th>`
     )
     .forEach(e => (tr.innerHTML += e));
-  console.log(headers);
 }
 
-function createAvgsTable(avgs) {
+function createAvgsTable(avgs, first) {
   document.getElementsByTagName("tbody")[0].remove();
   var tbody = document.createElement("tbody");
   document.getElementsByTagName("table")[0].appendChild(tbody);
-  avgs.sort((a, b) => (a.teamId > b.teamId ? 1 : b.teamId > a.teamId ? -1 : 0));
+  if (first) {
+    avgs.sort((a, b) =>
+      a.teamId > b.teamId ? 1 : b.teamId > a.teamId ? -1 : 0
+    );
+  }
   avgs.forEach(team => {
     const tr = document.createElement("TR");
     const teamId = document.createElement("TD");
@@ -109,13 +98,11 @@ function createAvgsTable(avgs) {
         Number(a) > Number(b) ? 1 : Number(b) > Number(a) ? -1 : 0
       )
       .map(key => {
-        console.log(`${team.teamId} key: `, key);
         return `<td class="tooltip"> ${team[key]} <span class="tooltiptext">${team.teamId} </span>`;
       })
       .forEach(element => (tr.innerHTML += element));
     tbody.appendChild(tr);
   });
-  console.log(avgs);
 }
 function createPitScoutingTable(pitScouting, teamId) {
   pitScouting = pitScouting.props;

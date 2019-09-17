@@ -33,9 +33,7 @@
 	</table>
 	<script>
 		createAvgsHeaders(headers);
-		createAvgsTable(avgs);
-		console.log(avgs);
-		console.log(headers);
+		createAvgsTable(avgs, true);
 	</script>
 </body>
 
