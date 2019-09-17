@@ -5,7 +5,7 @@
 <%@page import="scouting.*"%>
 <%
 	Map<String, Object> avgs = new HashMap<String, Object>();
-	Map<Integer, String> headers = GameScoutingPropsRepository.getPropNameInHebrew();
+	Map<Integer, Map<String, String>> headers = DatabaseManager.get().getGameScoutingPropsRepository().getPropsAsMap();
 	avgs.put("props", DatabaseManager.get().getGameScoutingRepository().getPropsAvarage());
 %>
 <html>
@@ -18,8 +18,8 @@
 		var avgs = <%=JSONObject.toJSONString(avgs) %>;
 		var headers = <%=JSONObject.toJSONString(headers) %>;
 		avgs = avgs.props;
-		addCombination(headers, avgs, [6, 7], 7.5, "סה״כ כדורים");
-		addCombination(headers, avgs, [10, 11, 9], 11.5, "סה״כ דיסקים");
+		addCombination(headers, avgs, [6, 7], 7.5, "סה״כ כדורים", "number");
+		addCombination(headers, avgs, [10, 11, 9], 11.5, "סה״כ דיסקים", "number");
 	</script>
 	<title>ScoutingStatictics</title>
 </head>

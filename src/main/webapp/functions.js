@@ -7,9 +7,7 @@ function getRandomColor() {
   return color;
 }
 function orderBy(avgs, propId) {
-  console.log(avgs[0].teamId);
-
-  if (avgs[0][propId][avgs[0][propId].length - 1] === "%") {
+  if (headers[propId].type == "boolean") {
     avgs.sort((a, b) => {
       var first = a[propId].substring(
         a[propId].indexOf("|") + 2,
@@ -33,7 +31,6 @@ function orderBy(avgs, propId) {
     );
   }
   createAvgsTable(avgs, false);
-  console.log(avgs[0].teamId);
   document.getElementsByTagName("thead")[0].childNodes.forEach(tr => {
     var x = Array.from(tr.childNodes)
       .filter(th => th.tagName == "TH")
@@ -63,6 +60,7 @@ function createAvgsHeaders(headers) {
   thead.appendChild(tr);
   document.getElementsByTagName("table")[0].appendChild(thead);
   _.keys(headers)
+    .filter(key => headers[key].type !== "text")
     .sort((a, b) =>
       Number(a) > Number(b) ? 1 : Number(b) > Number(a) ? -1 : 0
     )
@@ -70,7 +68,7 @@ function createAvgsHeaders(headers) {
       key =>
         `<th class="header" id=${key}>
         <button style="color: #b4b4b4;"	onclick="orderBy(avgs, ${key})">
-        ${headers[key]}
+        ${headers[key].name}
         </button>
         </th>`
     )
@@ -93,7 +91,7 @@ function createAvgsTable(avgs, first) {
     teamId.className = "header";
     tr.appendChild(teamId);
     _.keys(team)
-      .filter(key => key !== "teamId")
+      .filter(key => key !== "teamId" && team[key] !== "text")
       .sort((a, b) =>
         Number(a) > Number(b) ? 1 : Number(b) > Number(a) ? -1 : 0
       )
@@ -104,6 +102,7 @@ function createAvgsTable(avgs, first) {
     tbody.appendChild(tr);
   });
 }
+
 function createPitScoutingTable(pitScouting, teamId) {
   pitScouting = pitScouting.props;
   var table = document.getElementsByTagName("table")[0];
@@ -188,13 +187,10 @@ function createGraph(labels, propsLabels, data) {
   });
 }
 
-function addCombination(headers, avgs, colomns, newColoumn, newColoumnName) {
-  headers[newColoumn] = newColoumnName;
+function addCombination(headers, avgs, colomns, index, name, type) {
+  headers[index] = { name: name, type: type };
   avgs.map(
     team =>
-      (team[newColoumn] = colomns.reduce(
-        (acc, curr) => acc + Number(team[curr]),
-        0
-      ))
+      (team[index] = colomns.reduce((acc, curr) => acc + Number(team[curr]), 0))
   );
 }
