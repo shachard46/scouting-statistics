@@ -1,11 +1,3 @@
-function getRandomColor() {
-  var letters = "0123456789A";
-  var color = "#";
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 11)];
-  }
-  return color;
-}
 function orderBy(avgs, propId) {
   if (headers[propId].type == "boolean") {
     avgs.sort((a, b) => {
@@ -68,10 +60,10 @@ function createStatisticsHeaders(headers, isAvg) {
     .map(
       key =>
         `<th class="header" id=${key}>
-        <button style="color: #b4b4b4;"	onclick="orderBy(avgs, ${key})">
-        ${headers[key].name}
-        </button>
-        </th>`
+          <button style="color: #b4b4b4;"	onclick="orderBy(avgs, ${key})">
+          ${headers[key].name}
+          </button>
+          </th>`
     )
     .forEach(e => (tr.innerHTML += e));
 }
@@ -134,6 +126,15 @@ function createPitScoutingTable(pitScouting, teamId) {
     table.appendChild(tr);
   }
 }
+
+function addCombination(headers, avgs, colomns, index, name, type) {
+  headers[index] = { name: name, type: type };
+  avgs.map(
+    team =>
+      (team[index] = colomns.reduce((acc, curr) => acc + Number(team[curr]), 0))
+  );
+}
+
 function createGraph(labels, propsLabels, data) {
   var ctx = document.getElementById("myChart").getContext("2d");
   var myChart = new Chart(ctx, {
@@ -197,10 +198,11 @@ function createGraph(labels, propsLabels, data) {
   });
 }
 
-function addCombination(headers, avgs, colomns, index, name, type) {
-  headers[index] = { name: name, type: type };
-  avgs.map(
-    team =>
-      (team[index] = colomns.reduce((acc, curr) => acc + Number(team[curr]), 0))
-  );
+function getRandomColor() {
+  var letters = "0123456789A";
+  var color = "#";
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 11)];
+  }
+  return color;
 }
