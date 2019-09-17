@@ -221,8 +221,8 @@ public abstract class AbstractEntityDatabase<EntityType> {
     protected Connection getConnection() {
         if (con == null) {
             try {
-                Class.forName("com.mysql.jdbc.Driver");
-                con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/db", "root", "");
+                Class.forName("org.sqlite.JDBC");
+                con = DriverManager.getConnection("jdbc:sqlite:product.db");
             } catch (Exception e) {
                 throw new RuntimeException("Could not create connection", e);
             }
