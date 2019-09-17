@@ -25,15 +25,14 @@ function orderBy(avgs, propId) {
       }
       return 0;
     });
-    avgs.forEach(element => {});
   } else {
     avgs.sort((a, b) =>
       a[propId] > b[propId] ? -1 : b[propId] > a[propId] ? 1 : 0
     );
   }
-  var i = 0;
   document.getElementsByTagName("tbody")[0].childNodes.forEach(tr => {
     if (tr.tagName == "TR") {
+      var i = 0;
       var j = 0;
       tr.childNodes.forEach(td => {
         if (td.className != "header") {
@@ -50,7 +49,7 @@ function orderBy(avgs, propId) {
       i++;
     }
   });
-
+  console.log(avgs);
   document.getElementsByTagName("thead")[0].childNodes.forEach(tr => {
     tr.childNodes.forEach(th => {
       if (th.tagName == "TH") {
@@ -87,7 +86,7 @@ function createAvgsHeaders(headers) {
     )
     .map(
       key =>
-        `<th class="header" onclick="orderBy(avgs, ${key})">${headers[key]}</th>`
+        `<th class="header" id=${key} onclick="orderBy(avgs, ${key})">${headers[key]}</th>`
     )
     .forEach(e => (tr.innerHTML += e));
   console.log(headers);
@@ -102,16 +101,16 @@ function createAvgsTable(avgs) {
     const tr = document.createElement("TR");
     const teamId = document.createElement("TD");
     teamId.textContent = team.teamId;
+    teamId.className = "header";
     tr.appendChild(teamId);
     _.keys(team)
+      .filter(key => key !== "teamId")
       .sort((a, b) =>
         Number(a) > Number(b) ? 1 : Number(b) > Number(a) ? -1 : 0
       )
       .map(key => {
-        if (key !== "teamId") {
-          return `<td class="tooltip"> ${team[key]} <span class="tooltiptext">${team.teamId} </span>`;
-        }
-        return "";
+        console.log(`${team.teamId} key: `, key);
+        return `<td class="tooltip"> ${team[key]} <span class="tooltiptext">${team.teamId} </span>`;
       })
       .forEach(element => (tr.innerHTML += element));
     tbody.appendChild(tr);
@@ -203,8 +202,6 @@ function createGraph(labels, propsLabels, data) {
 }
 
 function addCombination(headers, avgs, colomns, newColoumn, newColoumnName) {
-  console.log(avgs);
-
   headers[newColoumn] = newColoumnName;
   avgs.map(
     team =>
@@ -213,12 +210,4 @@ function addCombination(headers, avgs, colomns, newColoumn, newColoumnName) {
         0
       ))
   );
-  console.log(avgs);
 }
-// return _.keys(team).map(colomn => {
-//       if ((colomn = newColoumn)) {
-//         return colomns.reduce((acc, curr) => acc + Number(team[curr]), 0);
-//       }
-//       return team[colomn];
-//     });
-//   });
