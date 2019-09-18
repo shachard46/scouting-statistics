@@ -8,7 +8,6 @@ import org.json.JSONObject;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class EventMatchRepository extends AbstractEntityDatabase<EventMatch> {
@@ -24,7 +23,8 @@ public class EventMatchRepository extends AbstractEntityDatabase<EventMatch> {
 
     @Override
     protected String insertEntitySQL(EventMatch entity) {
-        return String.format("INSERT INTO EventMatches(comp_level, match_id, alliance, TeamID) values ('%s', %d, %d, %d);",
+        return String.format(
+                "INSERT INTO EventMatches(comp_level, match_id, alliance, TeamID) values ('%s', %d, %d, %d);",
                 entity.getCompLevel(), entity.getGameId(), entity.getAlliance(), entity.getTeamId());
     }
 
@@ -48,9 +48,7 @@ public class EventMatchRepository extends AbstractEntityDatabase<EventMatch> {
         String tba_base_url = "https://www.thebluealliance.com/api/v3/";
         String request_url = tba_base_url + "event/" + eventKey + "/matches";
 
-
-        HttpResponse<JsonNode> response = Unirest.get(request_url)
-                .header("accept", "application/json")
+        HttpResponse<JsonNode> response = Unirest.get(request_url).header("accept", "application/json")
                 .queryString("X-TBA-Auth-Key", "XTONkkO0b81Cuof2WPFV1LUAXdO1OOv2rq0lq23xenS0lWDiEsxVtQQRo3REWkYp")
                 .asJson();
 
@@ -58,9 +56,6 @@ public class EventMatchRepository extends AbstractEntityDatabase<EventMatch> {
         for (int i = 0; i < arr.length(); i++) {
             JSONObject ev = arr.getJSONObject(i);
             int matchNumber = (Integer) ev.get("match_number");
-
-            List<Object> red = new ArrayList<>();
-            List<Object> blue = new ArrayList<>();
 
             for (Object team : ev.getJSONObject("alliances").getJSONObject("blue").getJSONArray("team_keys").toList()) {
                 DatabaseManager.get().getEventMatchRepository().create(new EventMatch(ev.getString("comp_level"),
