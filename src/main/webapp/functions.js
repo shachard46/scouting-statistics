@@ -30,7 +30,7 @@ function orderBy(avgs, propId) {
       a[propId] > b[propId] ? -1 : b[propId] > a[propId] ? 1 : 0
     );
   }
-  createAvgsTable(avgs, false);
+  createStatisticsTable(avgs, false);
   document.getElementsByTagName("thead")[0].childNodes.forEach(tr => {
     var x = Array.from(tr.childNodes)
       .filter(th => th.tagName == "TH")
@@ -53,14 +53,15 @@ function filterByTeamNumbers(avgs) {
   return avgs;
 }
 
-function createAvgsHeaders(headers) {
+function createStatisticsHeaders(headers, isAvg) {
   var thead = document.createElement("thead");
   var tr = document.createElement("tr");
   tr.innerHTML = "<td class='header'>מספר קבוצה</td>";
+  tr.innerHTML += isAvg ? "<td class='header'>מספר משחק</td>" : "";
   thead.appendChild(tr);
   document.getElementsByTagName("table")[0].appendChild(thead);
   _.keys(headers)
-    .filter(key => headers[key].type !== "text")
+    .filter(key => (isAvg ? true : headers[key].type !== "text"))
     .sort((a, b) =>
       Number(a) > Number(b) ? 1 : Number(b) > Number(a) ? -1 : 0
     )
@@ -75,7 +76,7 @@ function createAvgsHeaders(headers) {
     .forEach(e => (tr.innerHTML += e));
 }
 
-function createAvgsTable(avgs, first) {
+function createStatisticsTable(avgs, first, isAvg) {
   document.getElementsByTagName("tbody")[0].remove();
   var tbody = document.createElement("tbody");
   document.getElementsByTagName("table")[0].appendChild(tbody);
@@ -88,15 +89,24 @@ function createAvgsTable(avgs, first) {
     const tr = document.createElement("TR");
     const teamId = document.createElement("TD");
     teamId.textContent = team.teamId;
-    teamId.className = "header";
     tr.appendChild(teamId);
+    teamId.className = "header";
+    if (!isAvg) {
+      const gameId = document.createElement("TD");
+      gameId.textContent = team.gameId;
+      gameId.className = "header";
+      tr.appendChild(gameId);
+    }
     _.keys(team)
-      .filter(key => key !== "teamId" && team[key] !== "text")
+      .filter(
+        key =>
+          key !== "teamId" && (isAvg ? team[key] !== "text" : key !== "gameId")
+      )
       .sort((a, b) =>
         Number(a) > Number(b) ? 1 : Number(b) > Number(a) ? -1 : 0
       )
       .map(key => {
-        return `<td class="tooltip"> ${team[key]} <span class="tooltiptext">${team.teamId} </span>`;
+        return `<td class="tooltip" id="${key}"> ${team[key]} <span class="tooltiptext">${team.teamId} </span>`;
       })
       .forEach(element => (tr.innerHTML += element));
     tbody.appendChild(tr);

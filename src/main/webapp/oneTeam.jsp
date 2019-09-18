@@ -1,19 +1,34 @@
-<%@page import="java.util.TreeSet"%>
-<%@page import="java.util.SortedSet"%>
 <%@page import="java.util.HashMap"%>
+<%@page import="org.json.simple.JSONObject"%>
+<%@page import="java.util.Map"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@page import="scouting.*"%>
-<% if(request.getParameter("team").isEmpty()) { 
-	response.sendRedirect("averages.jsp");
-	return;
-}%>
+<%
+	if (request.getParameter("team").isEmpty()) {
+		response.sendRedirect("averages.jsp");
+		return;
+	}
+
+	Map<String, Object> avgs = new HashMap<String, Object>();
+	Map<Integer, Map<String, String>> headers = DatabaseManager.get().getGameScoutingPropsRepository()
+			.getPropsAsMap();
+	avgs.put("props", DatabaseManager.get().getGameScoutingRepository()
+			.getTeamPropsByGame(Integer.parseInt(request.getParameter("team"))));
+%>
 <html>
+
 <head>
 	<link rel="stylesheet" type="text/css" href="style.css" />
-	<%--
-    <script src="functions.js"></script>
-    --%>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+	<script src="functions.js"></script>
+	<script>
+		var avgs = <%=JSONObject.toJSONString(avgs) %>;
+		avgs = avgs.props;
+		var headers =<%=JSONObject.toJSONString(headers) %>;
+		addCombination(headers, avgs, [6, 7], 7.5, "סה״כ כדורים", "number");
+		addCombination(headers, avgs, [10, 11, 9], 11.5, "סה״כ דיסקים", "number");
+	</script>
 	<title>ScoutingStatictics</title>
 </head>
 
@@ -21,44 +36,14 @@
 	<%@include file="header.jsp"%>
 
 	<table class="container">
-		<thead>
-			<tr class="header">
-				<td>מספר קבוצה</td>
-				<td>מספר משחק</td>
-				<%
-					SortedSet<Integer> sortedKeys = new TreeSet<Integer>(DatabaseManager.get().getGameScoutingPropsRepository().getPropNameInHebrew()
-							.keySet());
-					
-					for (Integer propId : sortedKeys) {
-				%>
-				<td><%=DatabaseManager.get().getGameScoutingPropsRepository().getPropNameInHebrew().get(propId)%></td>
-				<%
-					}
-				%>
-			</tr>
-		</thead>
 		<tbody>
-			<%
-			for (HashMap<String, String> gameBar : DatabaseManager.get().getGameScoutingRepository()
-					.getTeamPropsByGame(Integer.parseInt(request.getParameter("team")))) {
-		%><tr>
-				<td class="tooltip header"><%=gameBar.get("teamId")%></td>
-				<td class="tooltip header"><%=gameBar.get("gameId")%></td>
-				<%
-				for (Integer propId : sortedKeys) {
-			%>
-				<td class="tooltip">
-					<%=gameBar.get(String.valueOf(propId)) == null ? "ריק" : gameBar.get(String.valueOf(propId))%> <span
-						class="tooltiptext"><%=gameBar.get("gameId")%></span>
-				</td>
 
-				<%
-				}
-				}
-			%>
-			</tr>
 		</tbody>
 	</table>
+	<script>
+		createStatisticsTable(avgs, true, false)
+		createStatisticsHeaders(headers, true);
+	</script>
 </body>
 
 </html>

@@ -16,8 +16,8 @@
 	<script src="functions.js"></script>
 	<script type="text/javascript">
 		var avgs = <%=JSONObject.toJSONString(avgs) %>;
-		var headers = <%=JSONObject.toJSONString(headers) %>;
 		avgs = avgs.props;
+		var headers = <%=JSONObject.toJSONString(headers) %>;
 		addCombination(headers, avgs, [6, 7], 7.5, "סה״כ כדורים", "number");
 		addCombination(headers, avgs, [10, 11, 9], 11.5, "סה״כ דיסקים", "number");
 	</script>
@@ -28,12 +28,11 @@
 	<%@include file="header.jsp"%>
 
 	<table class="container">
-		<tbody>
-		</tbody>
+		<tbody></tbody>
 	</table>
 	<script>
-		createAvgsHeaders(headers);
-		createAvgsTable(avgs, true);
+		createStatisticsHeaders(headers, false);
+		createStatisticsTable(avgs, true, true);
 	</script>
 </body>
 

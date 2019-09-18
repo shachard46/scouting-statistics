@@ -43,7 +43,7 @@
 		} else {
 	%>
   <div class="menuBarOption search">
-    <button onclick="createAvgsTable(filterByTeamNumbers(avgs))">
+    <button onclick="createStatisticsTable(filterByTeamNumbers(avgs), true, true)">
       <img src="img/search.PNG" />
     </button>
     <input type="text" placeholder="Filter teams" name="filterTeams" />

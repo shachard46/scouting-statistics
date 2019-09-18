@@ -55,8 +55,8 @@
 	<script>
 		let games = <%=JSONObject.toJSONString(m) %>.props;
 		let props = <%=JSONObject.toJSONString(props) %>.props;
-		games = games.map(game => _.pick(game, (value, key) => props[key] && props[key].propType === "number" || key === "teamId"));
-		props = _.pick(props, (value, key) => props[key] && props[key].propType === "number");
+		games = games.map(game => _.pick(game, (value, key) => props[key] && props[key].type === "number" || key === "teamId"));
+		props = _.pick(props, (value, key) => props[key] && props[key].type === "number");
 		createGraph(<%=gameNumbers %>, props, games);
 	</script>
 
