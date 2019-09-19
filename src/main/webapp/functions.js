@@ -30,7 +30,7 @@ function orderBy(avgs, propId) {
       a[propId] > b[propId] ? -1 : b[propId] > a[propId] ? 1 : 0
     );
   }
-  createStatisticsTable(avgs, false);
+  createStatisticsTable(avgs, false, true);
   document.getElementsByTagName("thead")[0].childNodes.forEach(tr => {
     var x = Array.from(tr.childNodes)
       .filter(th => th.tagName == "TH")
