@@ -131,7 +131,9 @@ function addCombination(headers, avgs, colomns, index, name, type) {
   headers[index] = { name: name, type: type };
   avgs.map(
     team =>
-      (team[index] = colomns.reduce((acc, curr) => acc + Number(team[curr]), 0))
+      (team[index] = String(
+        colomns.reduce((acc, curr) => acc + Number(team[curr]), 0)
+      ).substring(0, 3))
   );
 }
 

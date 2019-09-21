@@ -18,8 +18,8 @@
 		var avgs = <%=JSONObject.toJSONString(avgs) %>;
 		avgs = avgs.props;
 		var headers = <%=JSONObject.toJSONString(headers) %>;
-		addCombination(headers, avgs, [6, 7], 7.5, "סה״כ כדורים", "number");
-		addCombination(headers, avgs, [10, 11, 9], 11.5, "סה״כ דיסקים", "number");
+		addCombination(headers, avgs, [2, 6, 7], 7.5, "סה״כ כדורים", "number");
+		addCombination(headers, avgs, [3, 4, 5, 10, 11, 9], 11.5, "סה״כ דיסקים", "number");
 	</script>
 	<title>ScoutingStatictics</title>
 </head>
