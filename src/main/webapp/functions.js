@@ -60,7 +60,7 @@ function createStatisticsHeaders(headers, isAvg) {
     .map(
       key =>
         `<th class="header" id=${key}>
-          <button style="color: #b4b4b4;"	onclick="orderBy(avgs, ${key})">
+          <button style="color: #b4b4b4;"	onclick="orderBy(filterByTeamNumbers(avgs), ${key})">
           ${headers[key].name}
           </button>
           </th>`
