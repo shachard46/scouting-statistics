@@ -9,7 +9,10 @@ import java.io.FileWriter;
 import java.io.Writer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting> {
     public static void main(String[] args) throws Exception {
@@ -137,40 +140,40 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
 
     public List<HashMap<String, String>> orderByPropId(String propId) {
         List<HashMap<String, String>> propsAvg = getPropsAvarage();
-            Integer.parseInt(propId);
+        Integer.parseInt(propId);
 //        Collections.sort();
-            String propType = DatabaseManager.get().getGameScoutingPropsRepository()
-                    .getEntityByPropId(Integer.parseInt(propId)).getPropType();
-            for (int i = 0; i < propsAvg.size() - 1; i++) {
-                for (int j = 0; j < propsAvg.size() - i - 1; j++) {
-                    String propValue = propsAvg.get(j).get(propId);
-                    String propValuePlusOne = propsAvg.get(j + 1).get(propId);
-                    switch (propType) {
-                        case "number":
-                            if (Double.parseDouble(propValue) < Double.parseDouble(propValuePlusOne)) {
-                                HashMap<String, String> temp = propsAvg.get(j);
-                                propsAvg.get(j).putAll(propsAvg.get(j + 1));
-                                propsAvg.get(j + 1).putAll(temp);
-                            }
-                            break;
-                        case "text":
-                            return propsAvg;
-                        case "boolean":
-                            if (Double.parseDouble(
-                                    propValue.substring(
-                                            propValue.indexOf("|") + 2,
-                                            propValue.length() - 1)) <
+        String propType = DatabaseManager.get().getGameScoutingPropsRepository()
+                .getEntityByPropId(Integer.parseInt(propId)).getPropType();
+        for (int i = 0; i < propsAvg.size() - 1; i++) {
+            for (int j = 0; j < propsAvg.size() - i - 1; j++) {
+                String propValue = propsAvg.get(j).get(propId);
+                String propValuePlusOne = propsAvg.get(j + 1).get(propId);
+                switch (propType) {
+                    case "number":
+                        if (Double.parseDouble(propValue) < Double.parseDouble(propValuePlusOne)) {
+                            HashMap<String, String> temp = propsAvg.get(j);
+                            propsAvg.get(j).putAll(propsAvg.get(j + 1));
+                            propsAvg.get(j + 1).putAll(temp);
+                        }
+                        break;
+                    case "text":
+                        return propsAvg;
+                    case "boolean":
+                        if (Double.parseDouble(
+                                propValue.substring(
+                                        propValue.indexOf("|") + 2,
+                                        propValue.length() - 1)) <
                                 Double.parseDouble
-                                    (propValuePlusOne.substring(
-                                            propValuePlusOne.indexOf("|") + 2,
-                                            propValuePlusOne.length() - 1))) {
-                                HashMap<String, String> temp = propsAvg.get(j);
-                                propsAvg.get(j).putAll(propsAvg.get(j + 1));
-                                propsAvg.get(j + 1).putAll(temp);
-                            }
-                    }
+                                        (propValuePlusOne.substring(
+                                                propValuePlusOne.indexOf("|") + 2,
+                                                propValuePlusOne.length() - 1))) {
+                            HashMap<String, String> temp = propsAvg.get(j);
+                            propsAvg.get(j).putAll(propsAvg.get(j + 1));
+                            propsAvg.get(j + 1).putAll(temp);
+                        }
                 }
             }
+        }
 //        } catch (NumberFormatException e) {
 //            e.printStackTrace();
 ////            for (int i = 0; i < propsAvg.size() - 1; i++) {
