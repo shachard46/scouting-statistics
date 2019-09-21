@@ -45,6 +45,7 @@ public class EventMatchRepository extends AbstractEntityDatabase<EventMatch> {
     }
 
     public void importFromTBA(String eventKey) throws Exception {
+        DatabaseManager.get().getEventMatchRepository().clearTable();
         String tba_base_url = "https://www.thebluealliance.com/api/v3/";
         String request_url = tba_base_url + "event/" + eventKey + "/matches";
 
