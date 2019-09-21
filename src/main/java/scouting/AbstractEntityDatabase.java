@@ -162,7 +162,7 @@ public abstract class AbstractEntityDatabase<EntityType> {
         ResultSet rs = null;
         List<ElementType> entities = new ArrayList<>();
         try {
-            st = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            st = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             rs = st.executeQuery(sql);
             while (rs.next()) {
                 entities.add(handler.handleNext(rs));
@@ -221,8 +221,8 @@ public abstract class AbstractEntityDatabase<EntityType> {
     protected Connection getConnection() {
         if (con == null) {
             try {
-                Class.forName("com.mysql.jdbc.Driver");
-                con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/db", "root", "");
+                Class.forName("org.sqlite.JDBC");
+                con = DriverManager.getConnection("jdbc:sqlite:ScoutingData.db");
             } catch (Exception e) {
                 throw new RuntimeException("Could not create connection", e);
             }
