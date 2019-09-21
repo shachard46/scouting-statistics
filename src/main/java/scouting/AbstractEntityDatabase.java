@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
 //insert into TeamScouting (`game_id`,`team_id`,`prop_id`,`prop_value`)  values(1, 2630, 1, 2);
 //insert into TeamScoutingProps (`prop_id`,`prop_desc`,`prop_style`,`prop_type`, `prop_child`)  values(1, "p1", "not", "number", 0);
 public abstract class AbstractEntityDatabase<EntityType> {
@@ -16,7 +17,7 @@ public abstract class AbstractEntityDatabase<EntityType> {
         Connection connection = getConnection();
         Statement st = null;
         try {
-            st = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            st = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             String sql = insertEntitySQL(entity);
             st.executeUpdate(sql);
             return getDBEntity(entity);
@@ -36,7 +37,7 @@ public abstract class AbstractEntityDatabase<EntityType> {
         Connection connection = getConnection();
         Statement st = null;
         try {
-            st = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            st = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             String sql = updateEntityFieldSQL(field, unique, uniqueValue, value);
             st.executeUpdate(sql);
         } catch (Exception e) {
@@ -55,7 +56,7 @@ public abstract class AbstractEntityDatabase<EntityType> {
         Connection connection = getConnection();
         Statement st = null;
         try {
-            st = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            st = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             String sql = updateEntityFieldSQL(field, unique, uniqueValue, value);
             st.executeUpdate(sql);
         } catch (Exception e) {
@@ -74,7 +75,7 @@ public abstract class AbstractEntityDatabase<EntityType> {
         Connection connection = getConnection();
         Statement st = null;
         try {
-            st = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            st = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             String sql = deleteEntityRowSQL(unique, uniqueValue);
             st.executeUpdate(sql);
         } catch (Exception e) {
@@ -93,7 +94,7 @@ public abstract class AbstractEntityDatabase<EntityType> {
         Connection connection = getConnection();
         Statement st = null;
         try {
-            st = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            st = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             String sql = updateEntityRowSQL(entity);
             st.executeUpdate(sql);
         } catch (Exception e) {
@@ -112,7 +113,7 @@ public abstract class AbstractEntityDatabase<EntityType> {
         Connection connection = getConnection();
         Statement st = null;
         try {
-            st = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            st = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             String sql = String.format("delete from %s", getEntityTableName());
             st.executeUpdate(sql);
         } catch (Exception e) {
@@ -145,10 +146,10 @@ public abstract class AbstractEntityDatabase<EntityType> {
 
     abstract protected String updateEntityRowSQL(EntityType entity);
 
-	abstract protected EntityType entityFromResultSet(ResultSet rs) throws SQLException;
+    abstract protected EntityType entityFromResultSet(ResultSet rs) throws SQLException;
 
     @FunctionalInterface
-    interface ResultSetHandler<T>{
+    interface ResultSetHandler<T> {
         T handleNext(ResultSet rs) throws SQLException;
     }
 
@@ -156,7 +157,8 @@ public abstract class AbstractEntityDatabase<EntityType> {
         return selectElements(sql, this::entityFromResultSet);
     }
 
-    protected <ElementType> List<ElementType> selectElements(String sql, ResultSetHandler<ElementType> handler) throws RuntimeException {
+    protected <ElementType> List<ElementType> selectElements(String sql, ResultSetHandler<ElementType> handler)
+            throws RuntimeException {
         Connection connection = getConnection();
         Statement st = null;
         ResultSet rs = null;

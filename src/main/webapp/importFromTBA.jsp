@@ -3,4 +3,7 @@
 <%@ page import="scouting.*"%>
 <%
 	DatabaseManager.get().getEventMatchRepository().importFromTBA(request.getParameter("comp-name"));
-%>
+	%>
+<script type="text/javascript">
+	location.href = "averages.jsp";
+</script>
