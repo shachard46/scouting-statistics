@@ -80,9 +80,13 @@ function createStatisticsTable(avgs, first, isAvg) {
   avgs.forEach(team => {
     const tr = document.createElement("TR");
     const teamId = document.createElement("TD");
-    teamId.textContent = team.teamId;
+    const a = document.createElement("a");
+    a.href = `oneTeam.jsp?team=${team.teamId}`;
+    a.textContent = team.teamId;
+    teamId.appendChild(a);
     tr.appendChild(teamId);
     teamId.className = "header";
+    a.className = "teamLink"
     if (!isAvg) {
       const gameId = document.createElement("TD");
       gameId.textContent = team.gameId;

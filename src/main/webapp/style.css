@@ -205,6 +205,9 @@ img {
   font-size: 1.3em !important;
   color: #b4b4b4 !important;
 }
+.teamLink {
+  background: #007ea500;
+}
 .tooltip {
   position: relative;
 }
