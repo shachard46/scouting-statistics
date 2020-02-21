@@ -15,12 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting> {
-    public static void main(String[] args) throws Exception {
-        for (HashMap<String, String> team : DatabaseManager.get().getGameScoutingRepository().orderByPropId("11")) {
-            System.out.println(team);
-        }
-    }
-
     @Override
     protected String getEntityTableName() {
         return "TeamScouting";
@@ -47,7 +41,7 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
                 rs.getString("prop_value"));
     }
 
-    public List<GameScouting> getAllEntitiesByTeam(int teamId) {
+    private List<GameScouting> getAllEntitiesByTeam(int teamId) {
         return getEntitiesByQuery(
                 String.format("select * from TeamScouting where team_id=%d order by prop_id", teamId));
     }
@@ -57,14 +51,14 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
 
     }
 
-    public List<String> getAllTeamNumbers() throws RuntimeException {
-        return selectElements("select distinct team_id from TeamScouting;", rs -> String.valueOf(rs.getInt("team_id")));
+    public List<Integer> getAllTeamNumbers() throws RuntimeException {
+        return selectElements("select distinct team_id from TeamScouting;", rs -> rs.getInt("team_id"));
     }
 
-    public List<GameScouting> filterEntitiesByGameId(List<GameScouting> gameScoutings, int gameId) {
+    private List<GameScouting> filterEntitiesByGameId(List<GameScouting> gameScoutings, int gameId) {
         List<GameScouting> gameGameScoutings = getEntitiesByQuery(
                 String.format("SELECT * FROM TeamScouting where game_id=%d order by game_id;", gameId));
-        List<GameScouting> newList = new ArrayList<GameScouting>();
+        List<GameScouting> newList = new ArrayList<>();
         for (GameScouting gameScouting : gameScoutings) {
             for (GameScouting propGameScouting : gameGameScoutings) {
                 if (gameScouting.toString().equals(propGameScouting.toString())) {
@@ -75,7 +69,7 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
         return newList;
     }
 
-    public HashMap<String, String> getPropAvarageByTeam(int teamId) {
+    private HashMap<String, String> getPropAvarageByTeam(int teamId) {
         HashMap<String, String> pAvg = new HashMap<>();
         selectElements(String.format("select prop_id, prop_avg from avgs where team_id=%d;", teamId), rs -> {
             pAvg.put(String.valueOf(rs.getInt("prop_id")), String.valueOf(rs.getString("prop_avg")));
@@ -86,7 +80,7 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
     // create view avgs as SELECT team_id, prop_id, avg(prop_value) as prop_avg FROM
     // db.TeamScouting group by team_id, prop_id;
 
-    public HashMap<String, String> getPropsAvarageByTeam(int teamId) {
+    private HashMap<String, String> getPropsAvarageByTeam(int teamId) {
         HashMap<String, String> avgs = new HashMap<>();
         avgs.put("teamId", String.valueOf(teamId));
         for (String propId : getPropAvarageByTeam(teamId).keySet()) {
@@ -115,10 +109,10 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
     }
 
     public List<HashMap<String, String>> getPropsAvarage() {
-        List<String> teamIds = getAllTeamNumbers();
+        List<Integer> teamIds = getAllTeamNumbers();
         List<HashMap<String, String>> teamBars = new ArrayList<>();
-        for (String teamId : teamIds) {
-            teamBars.add(getPropsAvarageByTeam(Integer.parseInt(teamId)));
+        for (Integer teamId : teamIds) {
+            teamBars.add(getPropsAvarageByTeam(teamId));
         }
         return teamBars;
     }
@@ -136,58 +130,6 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
             teamBars.add(teamBar);
         }
         return teamBars;
-    }
-
-    public List<HashMap<String, String>> orderByPropId(String propId) {
-        List<HashMap<String, String>> propsAvg = getPropsAvarage();
-        Integer.parseInt(propId);
-//        Collections.sort();
-        String propType = DatabaseManager.get().getGameScoutingPropsRepository()
-                .getEntityByPropId(Integer.parseInt(propId)).getPropType();
-        for (int i = 0; i < propsAvg.size() - 1; i++) {
-            for (int j = 0; j < propsAvg.size() - i - 1; j++) {
-                String propValue = propsAvg.get(j).get(propId);
-                String propValuePlusOne = propsAvg.get(j + 1).get(propId);
-                switch (propType) {
-                    case "number":
-                        if (Double.parseDouble(propValue) < Double.parseDouble(propValuePlusOne)) {
-                            HashMap<String, String> temp = propsAvg.get(j);
-                            propsAvg.get(j).putAll(propsAvg.get(j + 1));
-                            propsAvg.get(j + 1).putAll(temp);
-                        }
-                        break;
-                    case "text":
-                        return propsAvg;
-                    case "boolean":
-                        if (Double.parseDouble(
-                                propValue.substring(
-                                        propValue.indexOf("|") + 2,
-                                        propValue.length() - 1)) <
-                                Double.parseDouble
-                                        (propValuePlusOne.substring(
-                                                propValuePlusOne.indexOf("|") + 2,
-                                                propValuePlusOne.length() - 1))) {
-                            HashMap<String, String> temp = propsAvg.get(j);
-                            propsAvg.get(j).putAll(propsAvg.get(j + 1));
-                            propsAvg.get(j + 1).putAll(temp);
-                        }
-                }
-            }
-        }
-//        } catch (NumberFormatException e) {
-//            e.printStackTrace();
-////            for (int i = 0; i < propsAvg.size() - 1; i++) {
-////                for (int j = 0; j < propsAvg.size() - i - 1; j++) {
-////                    if (Integer.parseInt(propsAvg.get(j).get("teamId")) < Integer
-////                            .parseInt(propValuePlusOne)) {
-////                        HashMap<String, String> temp = propsAvg.get(j);
-////                        propsAvg.get(j).putAll(propsAvg.get(j + 1));
-////                        propsAvg.get(j + 1).putAll(temp);
-////                    }
-////                }
-////            }
-//        }
-        return propsAvg;
     }
 
     public void exportToTablet(String gameId, String compLevel) throws Exception {
@@ -225,7 +167,6 @@ public class GameScoutingRepository extends AbstractEntityDatabase<GameScouting>
             template.process(root, out);
             out.flush();
             out.close();
-//            Runtime.getRuntime().exec(new String[] {"cmd", "/K", "Start"});
             Runtime.getRuntime().exec(new String[]{"zsh", "/K", "Start"});
             Runtime.getRuntime().exec("adb push /Users/shachardavid/table" + i + ".html /storage/emulated/0/");
             i++;

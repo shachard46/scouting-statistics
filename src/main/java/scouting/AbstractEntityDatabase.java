@@ -13,14 +13,14 @@ import java.util.List;
 public abstract class AbstractEntityDatabase<EntityType> {
     private Connection con;
 
-    public EntityType create(EntityType entity) {
+    public void create(EntityType entity) {
         Connection connection = getConnection();
         Statement st = null;
         try {
             st = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             String sql = insertEntitySQL(entity);
             st.executeUpdate(sql);
-            return getDBEntity(entity);
+            getDBEntity(entity);
         } catch (Exception e) {
             throw new RuntimeException("Could not create statement", e);
         } finally {
@@ -103,7 +103,7 @@ public abstract class AbstractEntityDatabase<EntityType> {
             if (st != null) {
                 try {
                     st.close();
-                } catch (SQLException e) {
+                } catch (SQLException ignored) {
                 }
             }
         }
@@ -122,7 +122,7 @@ public abstract class AbstractEntityDatabase<EntityType> {
             if (st != null) {
                 try {
                     st.close();
-                } catch (SQLException e) {
+                } catch (SQLException ignored) {
                 }
             }
         }
@@ -153,11 +153,11 @@ public abstract class AbstractEntityDatabase<EntityType> {
         T handleNext(ResultSet rs) throws SQLException;
     }
 
-    protected List<EntityType> getEntitiesByQuery(String sql) throws RuntimeException {
+    List<EntityType> getEntitiesByQuery(String sql) throws RuntimeException {
         return selectElements(sql, this::entityFromResultSet);
     }
 
-    protected <ElementType> List<ElementType> selectElements(String sql, ResultSetHandler<ElementType> handler)
+    <ElementType> List<ElementType> selectElements(String sql, ResultSetHandler<ElementType> handler)
             throws RuntimeException {
         Connection connection = getConnection();
         Statement st = null;
@@ -175,13 +175,13 @@ public abstract class AbstractEntityDatabase<EntityType> {
             if (rs != null) {
                 try {
                     rs.close();
-                } catch (SQLException e) {
+                } catch (SQLException ignored) {
                 }
             }
             if (st != null) {
                 try {
                     st.close();
-                } catch (SQLException e) {
+                } catch (SQLException ignored) {
                 }
             }
         }

@@ -68,11 +68,11 @@ function createStatisticsHeaders(headers, isAvg) {
     .forEach(e => (tr.innerHTML += e));
 }
 
-function createStatisticsTable(avgs, first, isAvg) {
+function createStatisticsTable(avgs, firstTime, isAvg) {
   document.getElementsByTagName("tbody")[0].remove();
   var tbody = document.createElement("tbody");
   document.getElementsByTagName("table")[0].appendChild(tbody);
-  if (first) {
+  if (firstTime) {
     avgs.sort((a, b) =>
       a.teamId > b.teamId ? 1 : b.teamId > a.teamId ? -1 : 0
     );
